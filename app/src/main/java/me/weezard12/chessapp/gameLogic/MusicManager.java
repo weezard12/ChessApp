@@ -20,6 +20,7 @@ public class MusicManager {
     private boolean stopMusicOnMinimize = true; // New flag for stopping music when minimized
 
     private MusicManager(Context context) {
+        instance = this;
         // Initialize SoundPool for effects
         AudioAttributes audioAttributes = new AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
