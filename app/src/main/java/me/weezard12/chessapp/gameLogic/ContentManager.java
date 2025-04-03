@@ -1,6 +1,8 @@
 package me.weezard12.chessapp.gameLogic;
 
-import static com.example.android2dtest.gameLogic.MyDebug.log;
+
+
+import static me.weezard12.chessapp.gameLogic.MyDebug.log;
 
 import android.content.Context;
 import android.graphics.Bitmap;

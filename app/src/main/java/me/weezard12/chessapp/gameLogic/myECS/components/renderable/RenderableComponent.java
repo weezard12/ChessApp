@@ -5,7 +5,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 
-import com.example.android2dtest.gameLogic.myECS.components.GameComponent;
+import me.weezard12.chessapp.gameLogic.myECS.components.GameComponent;
 
 public class RenderableComponent extends GameComponent {
     public PointF getOffset() {

@@ -5,9 +5,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
-import com.example.android2dtest.gameLogic.myPhysics.shapes.Box;
-import com.example.android2dtest.gameLogic.myPhysics.shapes.Circle;
-import com.example.android2dtest.gameLogic.myPhysics.shapes.Shape;
+import me.weezard12.chessapp.gameLogic.myPhysics.shapes.Box;
+import me.weezard12.chessapp.gameLogic.myPhysics.shapes.Circle;
+import me.weezard12.chessapp.gameLogic.myPhysics.shapes.Shape;
 
 import java.util.ArrayList;
 import java.util.List;

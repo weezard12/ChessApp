@@ -6,8 +6,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
-import com.example.android2dtest.gameLogic.myECS.entities.GameEntity;
-import com.example.android2dtest.gameLogic.myPhysics.shapes.Box;
+import me.weezard12.chessapp.gameLogic.myECS.entities.GameEntity;
+import me.weezard12.chessapp.gameLogic.myPhysics.shapes.Box;
 
 public final class Batch extends GameEntity {
 

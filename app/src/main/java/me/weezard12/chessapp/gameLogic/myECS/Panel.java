@@ -1,13 +1,13 @@
 package me.weezard12.chessapp.gameLogic.myECS;
 
-import static com.example.android2dtest.gameLogic.MyDebug.log;
+import static me.weezard12.chessapp.gameLogic.MyDebug.log;
 
 import android.graphics.PointF;
 
-import com.example.android2dtest.gameLogic.myECS.entities.GameEntity;
-import com.example.android2dtest.gameLogic.myPhysics.BoxCollider;
-import com.example.android2dtest.gameLogic.myPhysics.Collider;
-import com.example.android2dtest.gameLogic.myPhysics.shapes.Box;
+import me.weezard12.chessapp.gameLogic.myECS.entities.GameEntity;
+import me.weezard12.chessapp.gameLogic.myPhysics.BoxCollider;
+import me.weezard12.chessapp.gameLogic.myPhysics.Collider;
+import me.weezard12.chessapp.gameLogic.myPhysics.shapes.Box;
 
 import java.util.ArrayList;
 

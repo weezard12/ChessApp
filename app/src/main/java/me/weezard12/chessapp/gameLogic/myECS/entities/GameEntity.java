@@ -4,10 +4,10 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.PointF;
 
-import com.example.android2dtest.gameLogic.math.Transform;
-import com.example.android2dtest.gameLogic.myECS.GameScene;
-import com.example.android2dtest.gameLogic.myECS.components.GameComponent;
-import com.example.android2dtest.gameLogic.myECS.components.renderable.RenderableComponent;
+import me.weezard12.chessapp.gameLogic.math.Transform;
+import me.weezard12.chessapp.gameLogic.myECS.GameScene;
+import me.weezard12.chessapp.gameLogic.myECS.components.GameComponent;
+import me.weezard12.chessapp.gameLogic.myECS.components.renderable.RenderableComponent;
 
 import java.util.ArrayList;
 import java.util.Iterator;

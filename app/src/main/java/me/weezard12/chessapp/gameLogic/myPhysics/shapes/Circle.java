@@ -1,10 +1,11 @@
 package me.weezard12.chessapp.gameLogic.myPhysics.shapes;
 
-import static com.example.android2dtest.main.MyUtils.distance;
+import static me.weezard12.chessapp.gameLogic.math.MathUtils.distance;
+
 
 import android.graphics.PointF;
 
-import com.example.android2dtest.gameLogic.myPhysics.ShapeCollisions;
+import me.weezard12.chessapp.gameLogic.myPhysics.ShapeCollisions;
 
 public class Circle extends Shape{
     public float radius;

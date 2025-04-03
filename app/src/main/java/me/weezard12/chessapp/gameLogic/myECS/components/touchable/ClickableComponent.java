@@ -2,8 +2,8 @@ package me.weezard12.chessapp.gameLogic.myECS.components.touchable;
 
 import android.view.MotionEvent;
 
-import com.example.android2dtest.gameLogic.myPhysics.Collider;
-import com.example.android2dtest.gameLogic.myPhysics.shapes.Shape;
+import me.weezard12.chessapp.gameLogic.myPhysics.Collider;
+import me.weezard12.chessapp.gameLogic.myPhysics.shapes.Shape;
 
 public class ClickableComponent extends TouchBase {
     private OnClickListener onClickListener; // Callback for click events

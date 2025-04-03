@@ -1,6 +1,6 @@
 package me.weezard12.chessapp.gameLogic.myECS;
 
-import static com.example.android2dtest.gameLogic.MyDebug.log;
+import static me.weezard12.chessapp.gameLogic.MyDebug.log;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -16,11 +16,11 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
-import com.example.android2dtest.gameLogic.ContentManager;
-import com.example.android2dtest.gameLogic.GameLoop;
-import com.example.android2dtest.gameLogic.myECS.components.touchable.TouchBase;
-import com.example.android2dtest.gameLogic.myECS.entities.GameEntity;
-import com.example.android2dtest.gameLogic.myPhysics.PhysicsSystem;
+import me.weezard12.chessapp.gameLogic.ContentManager;
+import me.weezard12.chessapp.gameLogic.GameLoop;
+import me.weezard12.chessapp.gameLogic.myECS.components.touchable.TouchBase;
+import me.weezard12.chessapp.gameLogic.myECS.entities.GameEntity;
+import me.weezard12.chessapp.gameLogic.myPhysics.PhysicsSystem;
 
 import java.util.ArrayList;
 import java.util.List;

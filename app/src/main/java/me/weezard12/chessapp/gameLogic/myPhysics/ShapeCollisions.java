@@ -1,7 +1,7 @@
 package me.weezard12.chessapp.gameLogic.myPhysics;
 
-import com.example.android2dtest.gameLogic.myPhysics.shapes.Box;
-import com.example.android2dtest.gameLogic.myPhysics.shapes.Circle;
+import me.weezard12.chessapp.gameLogic.myPhysics.shapes.Box;
+import me.weezard12.chessapp.gameLogic.myPhysics.shapes.Circle;
 
 public final class ShapeCollisions {
 

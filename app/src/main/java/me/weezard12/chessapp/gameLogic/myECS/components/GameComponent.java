@@ -1,6 +1,6 @@
 package me.weezard12.chessapp.gameLogic.myECS.components;
 
-import com.example.android2dtest.gameLogic.myECS.entities.GameEntity;
+import me.weezard12.chessapp.gameLogic.myECS.entities.GameEntity;
 
 
 public abstract class GameComponent {

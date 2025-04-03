@@ -1,8 +1,8 @@
 package me.weezard12.chessapp.gameLogic.myPhysics;
 
-import com.example.android2dtest.gameLogic.myECS.components.GameComponent;
-import com.example.android2dtest.gameLogic.myECS.entities.GameEntity;
-import com.example.android2dtest.gameLogic.myPhysics.shapes.Shape;
+import me.weezard12.chessapp.gameLogic.myECS.components.GameComponent;
+import me.weezard12.chessapp.gameLogic.myECS.entities.GameEntity;
+import me.weezard12.chessapp.gameLogic.myPhysics.shapes.Shape;
 
 import java.util.List;
 

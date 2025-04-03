@@ -3,7 +3,8 @@ package me.weezard12.chessapp.gameLogic;
 import android.graphics.Canvas;
 import android.util.Log;
 
-import com.example.android2dtest.gameLogic.myECS.GameScene;
+import me.weezard12.chessapp.gameLogic.myECS.GameScene;
+
 
 public class GameLoop extends Thread {
     private volatile boolean isRunning = true;

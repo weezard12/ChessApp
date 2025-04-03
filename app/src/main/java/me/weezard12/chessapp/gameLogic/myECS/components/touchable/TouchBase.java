@@ -2,10 +2,10 @@ package me.weezard12.chessapp.gameLogic.myECS.components.touchable;
 
 import android.view.MotionEvent;
 
-import com.example.android2dtest.gameLogic.myECS.components.GameComponent;
-import com.example.android2dtest.gameLogic.myECS.entities.GameEntity;
-import com.example.android2dtest.gameLogic.myPhysics.Collider;
-import com.example.android2dtest.gameLogic.myPhysics.shapes.Shape;
+import me.weezard12.chessapp.gameLogic.myECS.components.GameComponent;
+import me.weezard12.chessapp.gameLogic.myECS.entities.GameEntity;
+import me.weezard12.chessapp.gameLogic.myPhysics.Collider;
+import me.weezard12.chessapp.gameLogic.myPhysics.shapes.Shape;
 
 public abstract class TouchBase extends GameComponent {
     protected final Shape shape;
