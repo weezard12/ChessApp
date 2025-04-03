@@ -10,7 +10,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.android2dtest.R;
+import me.weezard12.chessapp.R;
 
 public class ChessHotSitActivity extends AppCompatActivity {
 

@@ -3,8 +3,8 @@ package me.weezard12.chessapp.chessGame.ai;
 import android.graphics.Point;
 import android.util.Log;
 
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.board.GameBoard;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.pieces.baseClasses.BasePiece;
+import me.weezard12.chessapp.chessGame.board.GameBoard;
+import me.weezard12.chessapp.chessGame.pieces.baseClasses.BasePiece;
 
 public class ShtokfishThread extends Thread{
 

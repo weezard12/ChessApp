@@ -2,10 +2,10 @@ package me.weezard12.chessapp.chessGame.ai;
 
 import android.graphics.Point;
 
-import com.example.android2dtest.gameLogic.MyDebug;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.board.GameBoard;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.pieces.baseClasses.BasePiece;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.pieces.baseClasses.PieceType;
+import me.weezard12.chessapp.gameLogic.MyDebug;
+import me.weezard12.chessapp.chessGame.board.GameBoard;
+import me.weezard12.chessapp.chessGame.pieces.baseClasses.BasePiece;
+import me.weezard12.chessapp.chessGame.pieces.baseClasses.PieceType;
 
 import java.util.ArrayList;
 

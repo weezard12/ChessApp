@@ -11,7 +11,7 @@ import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.example.android2dtest.R;
+import me.weezard12.chessapp.R;
 
 import java.util.Random;
 

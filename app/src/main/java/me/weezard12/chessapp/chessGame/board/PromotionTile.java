@@ -2,15 +2,15 @@ package me.weezard12.chessapp.chessGame.board;
 
 import android.graphics.Color;
 
-import com.example.android2dtest.gameLogic.myECS.GameScene;
-import com.example.android2dtest.gameLogic.myECS.components.renderable.BoxRenderer;
-import com.example.android2dtest.gameLogic.myECS.components.renderable.SpriteRenderer;
-import com.example.android2dtest.gameLogic.myECS.components.touchable.ClickableComponent;
-import com.example.android2dtest.gameLogic.myECS.entities.GameEntity;
-import com.example.android2dtest.gameLogic.myPhysics.BoxCollider;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.pieces.*;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.pieces.baseClasses.PieceType;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.scenes.base.ChessSceneBase;
+import me.weezard12.chessapp.gameLogic.myECS.GameScene;
+import me.weezard12.chessapp.gameLogic.myECS.components.renderable.BoxRenderer;
+import me.weezard12.chessapp.gameLogic.myECS.components.renderable.SpriteRenderer;
+import me.weezard12.chessapp.gameLogic.myECS.components.touchable.ClickableComponent;
+import me.weezard12.chessapp.gameLogic.myECS.entities.GameEntity;
+import me.weezard12.chessapp.gameLogic.myPhysics.BoxCollider;
+import me.weezard12.chessapp.chessGame.pieces.*;
+import me.weezard12.chessapp.chessGame.pieces.baseClasses.PieceType;
+import me.weezard12.chessapp.chessGame.scenes.base.ChessSceneBase;
 
 import java.util.List;
 

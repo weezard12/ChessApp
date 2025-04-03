@@ -1,7 +1,7 @@
 package me.weezard12.chessapp.chessGame.ai;
 
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.pieces.baseClasses.BasePiece;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.pieces.baseClasses.TurnType;
+import me.weezard12.chessapp.chessGame.pieces.baseClasses.BasePiece;
+import me.weezard12.chessapp.chessGame.pieces.baseClasses.TurnType;
 
 public class PositionEval {
     public BasePiece[][] position;

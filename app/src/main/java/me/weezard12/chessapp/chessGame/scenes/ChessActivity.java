@@ -8,8 +8,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.android2dtest.R;
-import com.example.android2dtest.gameLogic.MusicManager;
+import me.weezard12.chessapp.R;
+import me.weezard12.chessapp.gameLogic.MusicManager;
 
 public class ChessActivity extends AppCompatActivity {
 

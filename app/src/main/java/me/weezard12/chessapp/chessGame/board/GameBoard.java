@@ -5,21 +5,21 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
 
-import com.example.android2dtest.gameLogic.MyDebug;
-import com.example.android2dtest.gameLogic.math.Interpolation;
-import com.example.android2dtest.gameLogic.myECS.components.renderable.Batch;
-import com.example.android2dtest.gameLogic.myECS.components.renderable.RenderableComponent;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.ai.Shtokfish;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.ai.ShtokfishThread;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.pieces.BishopPiece;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.pieces.KingPiece;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.pieces.KnightPiece;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.pieces.PawnPiece;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.pieces.QueenPiece;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.pieces.RookPiece;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.pieces.baseClasses.BasePiece;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.pieces.baseClasses.PieceType;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.scenes.base.ChessSceneBase;
+import me.weezard12.chessapp.gameLogic.MyDebug;
+import me.weezard12.chessapp.gameLogic.math.Interpolation;
+import me.weezard12.chessapp.gameLogic.myECS.components.renderable.Batch;
+import me.weezard12.chessapp.gameLogic.myECS.components.renderable.RenderableComponent;
+import me.weezard12.chessapp.chessGame.ai.Shtokfish;
+import me.weezard12.chessapp.chessGame.ai.ShtokfishThread;
+import me.weezard12.chessapp.chessGame.pieces.BishopPiece;
+import me.weezard12.chessapp.chessGame.pieces.KingPiece;
+import me.weezard12.chessapp.chessGame.pieces.KnightPiece;
+import me.weezard12.chessapp.chessGame.pieces.PawnPiece;
+import me.weezard12.chessapp.chessGame.pieces.QueenPiece;
+import me.weezard12.chessapp.chessGame.pieces.RookPiece;
+import me.weezard12.chessapp.chessGame.pieces.baseClasses.BasePiece;
+import me.weezard12.chessapp.chessGame.pieces.baseClasses.PieceType;
+import me.weezard12.chessapp.chessGame.scenes.base.ChessSceneBase;
 
 import java.util.ArrayList;
 

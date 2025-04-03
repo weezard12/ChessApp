@@ -14,10 +14,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.android2dtest.R;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.ai.Shtokfish;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.ai.ShtokfishThread;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.board.GameBoard;
+import me.weezard12.chessapp.R;
+import me.weezard12.chessapp.chessGame.ai.Shtokfish;
+import me.weezard12.chessapp.chessGame.ai.ShtokfishThread;
+import me.weezard12.chessapp.chessGame.board.GameBoard;
 
 public class ChessBotActivity extends AppCompatActivity implements View.OnClickListener {
 

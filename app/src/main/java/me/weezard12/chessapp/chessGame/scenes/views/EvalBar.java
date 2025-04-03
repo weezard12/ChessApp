@@ -2,11 +2,11 @@ package me.weezard12.chessapp.chessGame.scenes.views;
 
 import android.graphics.Color;
 
-import com.example.android2dtest.gameLogic.myECS.GameScene;
-import com.example.android2dtest.gameLogic.myECS.components.renderable.BoxRenderer;
-import com.example.android2dtest.gameLogic.myECS.entities.GameEntity;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.ai.Shtokfish;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.board.GameBoard;
+import me.weezard12.chessapp.gameLogic.myECS.GameScene;
+import me.weezard12.chessapp.gameLogic.myECS.components.renderable.BoxRenderer;
+import me.weezard12.chessapp.gameLogic.myECS.entities.GameEntity;
+import me.weezard12.chessapp.chessGame.ai.Shtokfish;
+import me.weezard12.chessapp.chessGame.board.GameBoard;
 
 public class EvalBar extends GameEntity {
 

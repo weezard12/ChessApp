@@ -7,10 +7,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.example.android2dtest.R;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.board.BoardColors;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.board.GameBoard;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.scenes.SettingsActivity;
+import me.weezard12.chessapp.R;
+import me.weezard12.chessapp.chessGame.board.BoardColors;
+import me.weezard12.chessapp.chessGame.board.GameBoard;
+import me.weezard12.chessapp.chessGame.scenes.SettingsActivity;
 
 public class ThemeSelectorView extends LinearLayout {
 

@@ -10,9 +10,9 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 
-import com.example.android2dtest.R;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.board.GameBoard;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.scenes.MenuActivity;
+import me.weezard12.chessapp.R;
+import me.weezard12.chessapp.chessGame.board.GameBoard;
+import me.weezard12.chessapp.chessGame.scenes.MenuActivity;
 
 /**
  * TODO: document your custom view class.

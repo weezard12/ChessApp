@@ -5,15 +5,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.AttributeSet;
 
-import com.example.android2dtest.R;
-import com.example.android2dtest.gameLogic.GameLoop;
-import com.example.android2dtest.gameLogic.MyDebug;
-import com.example.android2dtest.gameLogic.myECS.GameScene;
-import com.example.android2dtest.gameLogic.myECS.components.renderable.Sprite;
-import com.example.android2dtest.gameLogic.myECS.entities.GameEntity;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.ai.Shtokfish;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.board.GameBoard;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.scenes.views.EvalBar;
+import me.weezard12.chessapp.R;
+import me.weezard12.chessapp.gameLogic.GameLoop;
+import me.weezard12.chessapp.gameLogic.MyDebug;
+import me.weezard12.chessapp.gameLogic.myECS.GameScene;
+import me.weezard12.chessapp.gameLogic.myECS.components.renderable.Sprite;
+import me.weezard12.chessapp.gameLogic.myECS.entities.GameEntity;
+import me.weezard12.chessapp.chessGame.ai.Shtokfish;
+import me.weezard12.chessapp.chessGame.board.GameBoard;
+import me.weezard12.chessapp.chessGame.scenes.views.EvalBar;
 
 import java.util.HashMap;
 

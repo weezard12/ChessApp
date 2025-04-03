@@ -2,9 +2,9 @@ package me.weezard12.chessapp.chessGame.board;
 
 
 
-import com.example.android2dtest.gameLogic.myPhysics.shapes.Box;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.pieces.baseClasses.BasePiece;
-import com.example.android2dtest.scenes.exampleScenes.ChessTest.pieces.baseClasses.PieceType;
+import me.weezard12.chessapp.gameLogic.myPhysics.shapes.Box;
+import me.weezard12.chessapp.chessGame.pieces.baseClasses.BasePiece;
+import me.weezard12.chessapp.chessGame.pieces.baseClasses.PieceType;
 
 
 public class PromotionSelection {
