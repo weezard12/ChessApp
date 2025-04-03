@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -34,6 +35,10 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
     private static final Point screenCenter = new Point();
     private static final Point screenEnd = new Point();
     public boolean debugRenderPhysics = false;
+    public boolean debugRenderScene = false;
+
+    public int fps;
+    public float deltaTime = 0;
 
     public Bitmap getBackgroundImage() {
         return backgroundImage;
@@ -70,7 +75,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         return new Point(screenCenter.x,screenCenter.y);
     }
     /**
-    * WARNING when inheriting the class do not use the constructor scene init logic!
+     * WARNING when inheriting the class do not use the constructor scene init logic!
      * override the start method so you cant get null reference when creating entities at the scene start.
      */
     public GameScene(Context context) {
@@ -135,16 +140,18 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
 
         //render the entities
         for (int i = 0; i < entities.size(); i++)
-            entities.get(i).render(GameLoop.deltaTime, canvas);
+            entities.get(i).render(deltaTime, canvas);
 
         //draw physics debug
         if(debugRenderPhysics)
             PhysicsSystem.debugRenderPhysics(canvas);
 
-        debugRender(canvas);
+
+        if(debugRenderScene)
+            debugRender(canvas);
     }
 
-    public void update(float delta){
+    public void update(){
 
         for (GameEntity entityToRemove : removeEntitiesAfterUpdate) {
             entities.remove(entityToRemove);
@@ -152,10 +159,10 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
 
         //update all entities
         for (int i = 0; i < entities.size(); i++)
-            entities.get(i).update(delta);
+            entities.get(i).update(deltaTime);
 
         //updates physics
-        PhysicsSystem.update(delta);
+        PhysicsSystem.update(deltaTime);
     }
 
     public void addEntity(GameEntity entity){
@@ -191,7 +198,7 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
         Paint paint = new Paint();
         paint.setColor(Color.RED);
         paint.setTextSize(80); // Adjust text size as needed
-        canvas.drawText("FPS: " + GameLoop.fps, 50, 100, paint); // Draw FPS at top-left
+        canvas.drawText("FPS: " + fps, 50, 100, paint); // Draw FPS at top-left
         canvas.drawText("Entity Count: " + entities.size(), 50, 200, paint); // Draw FPS at top-left
     }
 
@@ -223,6 +230,12 @@ public class GameScene extends SurfaceView implements SurfaceHolder.Callback {
                         View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
                         View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
         );
+    }
+
+    public void setTransparentBackground(){
+        setZOrderOnTop(true); // Allow the SurfaceView to be rendered on top
+        getHolder().setFormat(PixelFormat.TRANSLUCENT); // Enable transparency
+        setBackgroundColor(Color.TRANSPARENT);
     }
 }
 

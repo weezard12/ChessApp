@@ -54,18 +54,18 @@ public class PatternView extends View {
     private void init() {
         // Load multiple images into an array
         bitmaps = new Bitmap[]{
-                BitmapFactory.decodeResource(getResources(), R.raw.pawn0),
-                BitmapFactory.decodeResource(getResources(), R.raw.pawn1),
-                BitmapFactory.decodeResource(getResources(), R.raw.bishop0),
-                BitmapFactory.decodeResource(getResources(), R.raw.bishop1),
-                BitmapFactory.decodeResource(getResources(), R.raw.knight0),
-                BitmapFactory.decodeResource(getResources(), R.raw.knight1),
-                BitmapFactory.decodeResource(getResources(), R.raw.queen0),
-                BitmapFactory.decodeResource(getResources(), R.raw.queen1),
-                BitmapFactory.decodeResource(getResources(), R.raw.king0),
-                BitmapFactory.decodeResource(getResources(), R.raw.king1),
-                BitmapFactory.decodeResource(getResources(), R.raw.rook0),
-                BitmapFactory.decodeResource(getResources(), R.raw.rook1)
+                BitmapFactory.decodeResource(getResources(), R.drawable.pawn0),
+                BitmapFactory.decodeResource(getResources(), R.drawable.pawn1),
+                BitmapFactory.decodeResource(getResources(), R.drawable.bishop0),
+                BitmapFactory.decodeResource(getResources(), R.drawable.bishop1),
+                BitmapFactory.decodeResource(getResources(), R.drawable.knight0),
+                BitmapFactory.decodeResource(getResources(), R.drawable.knight1),
+                BitmapFactory.decodeResource(getResources(), R.drawable.queen0),
+                BitmapFactory.decodeResource(getResources(), R.drawable.queen1),
+                BitmapFactory.decodeResource(getResources(), R.drawable.king0),
+                BitmapFactory.decodeResource(getResources(), R.drawable.king1),
+                BitmapFactory.decodeResource(getResources(), R.drawable.rook0),
+                BitmapFactory.decodeResource(getResources(), R.drawable.rook1)
         };
 
         // Randomly select the first image

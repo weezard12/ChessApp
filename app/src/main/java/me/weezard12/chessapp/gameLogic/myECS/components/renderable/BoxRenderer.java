@@ -3,8 +3,8 @@ package me.weezard12.chessapp.gameLogic.myECS.components.renderable;
 import android.graphics.Canvas;
 
 public class BoxRenderer extends RenderableComponent {
-    float width;
-    float height;
+    public float width;
+    public float height;
 
     public BoxRenderer(float width, float height) {
         this.width = width;

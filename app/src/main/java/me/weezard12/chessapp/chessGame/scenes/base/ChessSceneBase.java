@@ -86,18 +86,18 @@ public class ChessSceneBase extends GameScene {
 
         // Manually maintain a list of resource IDs
         int[] textureIds = {
-                R.raw.bishop0,
-                R.raw.bishop1,
-                R.raw.king0,
-                R.raw.king1,
-                R.raw.knight0,
-                R.raw.knight1,
-                R.raw.pawn0,
-                R.raw.pawn1,
-                R.raw.queen0,
-                R.raw.queen1,
-                R.raw.rook0,
-                R.raw.rook1,
+                R.drawable.bishop0,
+                R.drawable.bishop1,
+                R.drawable.king0,
+                R.drawable.king1,
+                R.drawable.knight0,
+                R.drawable.knight1,
+                R.drawable.pawn0,
+                R.drawable.pawn1,
+                R.drawable.queen0,
+                R.drawable.queen1,
+                R.drawable.rook0,
+                R.drawable.rook1,
         };
 
         // Load each texture and store in HashMap

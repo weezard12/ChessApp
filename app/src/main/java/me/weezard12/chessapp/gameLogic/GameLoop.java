@@ -14,8 +14,6 @@ public class GameLoop extends Thread {
     private long lastFrameTime;
     private long timer;
     private int frames;
-    public static int fps;
-    public static float deltaTime = 0;
 
     public GameScene scene;
 
@@ -31,29 +29,32 @@ public class GameLoop extends Thread {
 
     @Override
     public void run() {
+        long timer = System.currentTimeMillis();
+
         while (isRunning) {
             long currentTime = System.nanoTime();
-            deltaTime = (currentTime - lastFrameTime) / 1000000000.0f;
+            scene.deltaTime = (currentTime - lastFrameTime) / 1_000_000_000.0f; // Convert ns to seconds
 
             if ((currentTime - lastFrameTime) >= FRAME_INTERVAL_NS) {
                 updateAndRender();
                 lastFrameTime = currentTime; // Assign current time here
                 frames++;
+            }
 
-                if (System.currentTimeMillis() - timer >= 1000) {
-                    fps = frames;
-                    frames = 0;
-                    timer += 1000;
-                }
-            } else {
-                try {
-                    Thread.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            if (System.currentTimeMillis() - timer >= 1000) {
+                scene.fps = frames;
+                frames = 0;
+                timer = System.currentTimeMillis(); // Reset using current time to avoid drift
+            }
+
+            try {
+                Thread.sleep(1); // Prevent CPU overload
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }
+
 
     private void updateAndRender() {
         // Check if the scene is initialized
@@ -68,7 +69,7 @@ public class GameLoop extends Thread {
                     // If canvas is acquired successfully
                     synchronized (scene.getHolder()) {
                         // Update the scene logic
-                        scene.update(deltaTime);
+                        scene.update();
                         // Draw the scene content on the canvas
                         scene.draw(canvas);
                     }

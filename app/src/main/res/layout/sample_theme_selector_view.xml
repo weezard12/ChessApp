@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:gravity="center"
+    android:clickable="true"
+    android:focusable="true"
+    android:layout_margin="0dp"
+    >
+
+    <!-- Wrapper layout for gradient -->
+    <LinearLayout
+        android:id="@+id/contentLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:elevation="8dp"
+        android:shadowColor="#80000000"
+        android:shadowRadius="8"
+        android:shadowDx="4"
+        android:shadowDy="4">
+
+        <!-- Theme Color 1 -->
+        <View
+            android:id="@+id/themeColor1"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="4dp"
+            android:background="@color/white" />
+
+        <!-- Theme Color 2 -->
+        <View
+            android:id="@+id/themeColor2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="4dp"
+            android:background="@color/white" />
+
+        <!-- Theme Color 3 -->
+        <View
+            android:id="@+id/themeColor3"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="4dp"
+            android:background="@color/white" />
+
+    </LinearLayout>
+</LinearLayout>

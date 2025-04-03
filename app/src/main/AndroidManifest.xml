@@ -13,6 +13,29 @@
         android:theme="@style/Theme.ChessApp"
         tools:targetApi="31">
         <activity
+            android:name=".chessGame.scenes.LoadingScreenActivity"
+            android:exported="false" />
+        <activity
+            android:name=".chessGame.scenes.ChessHotSitActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".chessGame.scenes.ChessBotActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".chessGame.scenes.ChessActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".chessGame.scenes.SettingsActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".chessGame.scenes.MenuActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
