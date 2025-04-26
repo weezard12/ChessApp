@@ -25,16 +25,4 @@ public class ChessActivity extends AppCompatActivity {
         });
     }
 
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        MusicManager.getInstance(this).onAppMinimized();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        MusicManager.getInstance(this).onAppResumed();
-    }
 }

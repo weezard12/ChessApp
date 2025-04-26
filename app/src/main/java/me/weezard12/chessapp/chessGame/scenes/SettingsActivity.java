@@ -8,6 +8,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -30,10 +31,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
     LinearLayout themesLayout;
     Button backButton;
+    SeekBar musicVolumeSeekBar;
     
     private DatabaseHelp databaseHelp;
     private UserSessionManager sessionManager;
     private UserSettings userSettings;
+    private MusicManager musicManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +55,10 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             return insets;
         });
         
-        // Initialize database helper and session manager
+        // Initialize database helper, session manager, and music manager
         databaseHelp = new DatabaseHelp(this);
         sessionManager = UserSessionManager.getInstance(this);
+        musicManager = MusicManager.getInstance(this);
         
         // Load user settings
         loadUserSettings();
@@ -64,6 +68,10 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
         themesLayout = findViewById(R.id.themesLayout);
         updateThemes();
+        
+        // Setup music volume slider
+        musicVolumeSeekBar = findViewById(R.id.seekBarMusic);
+        setupMusicVolumeSlider();
     }
     public void updateThemes(){
         themesLayout.removeAllViews();
@@ -105,6 +113,10 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             
             // Apply user settings
             GameBoard.boardColors = userSettings.toBoardColors();
+            
+            // Apply music volume
+            float musicVolume = userSettings.getVolume();
+            musicManager.setMusicVolume(musicVolume);
         } else {
             // Guest user - use default settings
             userSettings = new UserSettings();
@@ -136,15 +148,45 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        MusicManager.getInstance(this).onAppMinimized();
-    }
+    
+    /**
+     * Setup the music volume slider
+     */
+    private void setupMusicVolumeSlider() {
+        // Set initial progress based on current settings
+        int progress = (int)(userSettings.getVolume() * 100);
+        musicVolumeSeekBar.setProgress(progress);
+        
+        // Set listener for changes
+        musicVolumeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    // Convert progress (0-100) to volume (0.0-1.0)
+                    float volume = progress / 100.0f;
+                    
+                    // Apply volume change immediately
+                    musicManager.setMusicVolume(volume);
+                    
+                    // Update user settings
+                    userSettings.setVolume(volume);
+                    
+                    // Save settings if logged in
+                    if (sessionManager.isLoggedIn() && !sessionManager.isGuest()) {
+                        databaseHelp.saveUserSettings(userSettings);
+                    }
+                }
+            }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        MusicManager.getInstance(this).onAppResumed();
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // Not needed
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // Not needed
+            }
+        });
     }
 }

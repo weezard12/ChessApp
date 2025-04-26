@@ -136,12 +136,12 @@
             android:layout_marginStart="128dp"
             android:layout_marginEnd="128dp" />
 
-        <!-- "Quit" Button -->
+        <!-- "Switch Account" Button -->
         <Button
-            android:id="@+id/btn_quit"
+            android:id="@+id/btn_switch_account"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Quit"
+            android:text="Switch Account"
             android:backgroundTint="#739552"
             android:textColor="#000000"
             android:shadowColor="#80000000"
@@ -149,6 +149,25 @@
             android:shadowDx="4"
             android:shadowDy="4"
             app:layout_constraintTop_toBottomOf="@id/btn_settings"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="12dp"
+            android:layout_marginStart="128dp"
+            android:layout_marginEnd="128dp" />
+            
+        <!-- "Quit" Button -->
+        <Button
+            android:id="@+id/btn_quit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Quit"
+            android:backgroundTint="#ebecd0"
+            android:textColor="#000000"
+            android:shadowColor="#80000000"
+            android:shadowRadius="8"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            app:layout_constraintTop_toBottomOf="@id/btn_switch_account"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="12dp"
