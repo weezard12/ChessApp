@@ -60,12 +60,8 @@ public class GlitchedKnightView extends GameScene {
         knight.setPosition(getSurfaceCenter());
         addEntity(knight);
     }
-    
-    /**
-     * Changes the background of the glitched knight view based on the bot's color
-     * @param isBotBlack true if the bot is playing as black, false if the bot is playing as white
-     */
-    public void setBotColor(boolean isBotBlack) {
-        knight.scene.setBackgroundColor(isBotBlack? Color.BLACK : Color.WHITE);
+    public void setThinking(boolean isThinking){
+        knight.getComponent(SpriteRenderer.class).setEnabled(!isThinking);
+        knight.getComponent(SpriteAnimationRenderer.class).setEnabled(isThinking);
     }
 }
