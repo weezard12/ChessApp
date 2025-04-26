@@ -8,6 +8,12 @@ import me.weezard12.chessapp.chessGame.pieces.baseClasses.BasePiece;
 import me.weezard12.chessapp.chessGame.pieces.baseClasses.PieceType;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class Shtokfish {
 
@@ -17,6 +23,10 @@ public class Shtokfish {
     public static GameStage stage;
 
     private static ArrayList<Opening> openings = new ArrayList<>();
+
+
+    private static int maxThreads = Runtime.getRuntime().availableProcessors();
+    private static ExecutorService executorService = Executors.newFixedThreadPool(maxThreads);
 
     public static void init(GameBoard gameBoard) {
         thread = new ShtokfishThread(gameBoard);
@@ -260,17 +270,16 @@ public class Shtokfish {
     }
 
     public static void getBestPosition(BasePiece[][] board, boolean forBlack) {
-
         PositionEval bestEval = new PositionEval(0);
         PositionEval bestEvalForEnemy = new PositionEval(0);
 
-        MyDebug.log("shtokfish", "thinking for "+(forBlack?"black":"white"));
+        MyDebug.log("shtokfish", "thinking for " + (forBlack ? "black" : "white") + " using " + maxThreads + " threads");
 
 
         currentBoardEval = getBestPosition(board, forBlack, 1, bestEval, bestEvalForEnemy);
 
         boolean isFoundOpening = false;
-        if (stage == GameStage.OPENING){
+        if (stage == GameStage.OPENING) {
             for (Opening opening : openings) {
                 BasePiece[][] p = opening.tryGetPositionIdx(board);
                 if (p != null) {
@@ -280,94 +289,150 @@ public class Shtokfish {
                     MyDebug.log("shtokfish", "opening:" + opening.name);
                     break;
                 }
-
             }
-            if(!isFoundOpening)
+            if (!isFoundOpening)
                 stage = GameStage.START_GAME;
-        }
-
-        else {
-            if(isInMiddleGame(board))
+        } else {
+            if (isInMiddleGame(board))
                 stage = GameStage.MIDDLE_GAME;
         }
 
-
-        MyDebug.log("shtokfish", "game stage: "+ stage +"\n" + currentBoardEval.toString());
+        MyDebug.log("shtokfish", "game stage: " + stage + "\n" + currentBoardEval.toString());
     }
 
-    private static BoardEval getBestPosition(BasePiece[][] board, boolean forBlack, int steps, PositionEval bestEval, PositionEval bestEvalForEnemy) {
-
+    private static BoardEval getBestPosition(BasePiece[][] board, boolean forBlack, int steps,
+                                             PositionEval bestEval, PositionEval bestEvalForEnemy) {
         if (Thread.interrupted())
             return currentBoardEval;
 
-        ArrayList<BasePiece[][]> allPositions = new ArrayList<>();
+        // Store all potential moves
+        List<MoveTask> allMoveTasks = new ArrayList<>();
         int movesCount = 0;
 
-        PositionEval currentEval = new PositionEval();
-        PositionEval currentEvalForEnemy = new PositionEval();
-
+        // Generate all possible moves for the current player
         for (int y = 0; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
+                if (board[y][x] != null && board[y][x].isEnemy == forBlack) {
+                    ArrayList<BasePiece[][]> piecePositions = new ArrayList<>();
+                    board[y][x].getAllPossibleMoves(x, y, piecePositions);
 
-                if (board[y][x] != null)
-                    //getPosition only for one color
-                    if (board[y][x].isEnemy == forBlack) {
-
-                        allPositions.clear();
-                        board[y][x].getAllPossibleMoves(x, y, allPositions);
-                        for (BasePiece[][] position : allPositions) {
-                            if (position != null) {
-                                if (steps > 0) {
-
-                                    //moves the other color to get the real position
-                                    BoardEval boardEval = getBestPosition(GameBoard.cloneBoard(position), !forBlack, steps - 1, new PositionEval(), new PositionEval());
-
-                                    //sets the current eval to the eval after other color moved
-                                    currentEval = forBlack ? boardEval.blackEval : boardEval.whiteEval;
-
-                                    //sets the position after the other color moved to the current position (overriding the other color move)
-                                    currentEval.position = position;
-
-                                    currentEvalForEnemy = forBlack ? boardEval.whiteEval : boardEval.blackEval;
-
-                                    currentEvalForEnemy.position = position;
-
-                                } else {
-                                    //gets the eval in the position (foe black and white)
-                                    calculateEvalForPosition(position, currentEval, forBlack);
-                                    calculateEvalForPosition(position, currentEvalForEnemy, !forBlack);
-                                    //MyDebug.log("shtokfish","pos"+currentEvalForEnemy.getSumEval());
-                                }
-
-                                if (PositionEval.isLeftBiggerThanRight(currentEval, currentEvalForEnemy, bestEval, bestEvalForEnemy)) {
-                                    bestEval = currentEval;
-                                    bestEvalForEnemy = currentEvalForEnemy;
-                                    currentEval = new PositionEval();
-                                    currentEvalForEnemy = new PositionEval();
-                                    //MyDebug.log("shtokfish","found pos for "+(forBlack?"black":"white"));
-                                }
-                                movesCount++;
-                            }
-
+                    for (BasePiece[][] position : piecePositions) {
+                        if (position != null) {
+                            allMoveTasks.add(new MoveTask(position, forBlack, steps));
+                            movesCount++;
                         }
-
                     }
+                }
             }
         }
 
-        //is checkmate
-        if(movesCount==0){
-            if(GameBoard.isColorInCheck(board,forBlack))
+        // Handle checkmate condition
+        if (movesCount == 0) {
+            if (GameBoard.isColorInCheck(board, forBlack))
                 bestEval.kingMoves = -100;
-            //MyDebug.log("shtokfish","moves possible: " + forBlack);
+            return new BoardEval(forBlack ? bestEvalForEnemy : bestEval, forBlack ? bestEval : bestEvalForEnemy);
         }
 
+        // Process moves in parallel if enough moves
+        if (movesCount > 1 && steps > 0) {
+            try {
+                // Execute move evaluation in parallel
+                List<Future<MoveResult>> futures = executorService.invokeAll(allMoveTasks);
+
+                // Process results
+                for (Future<MoveResult> future : futures) {
+                    MoveResult result = future.get();
+                    PositionEval currentEval = result.eval;
+                    PositionEval currentEvalForEnemy = result.enemyEval;
+
+                    if (PositionEval.isLeftBiggerThanRight(currentEval, currentEvalForEnemy, bestEval, bestEvalForEnemy)) {
+                        bestEval = currentEval;
+                        bestEvalForEnemy = currentEvalForEnemy;
+                    }
+                }
+            } catch (Exception e) {
+                MyDebug.log("shtokfish", "Parallel execution error: " + e.getMessage());
+                // Fall back to sequential processing if parallel fails
+                return processMovesSequentially(allMoveTasks, forBlack, bestEval, bestEvalForEnemy);
+            }
+        } else {
+            // Process moves sequentially for small number of moves or at leaf nodes
+            return processMovesSequentially(allMoveTasks, forBlack, bestEval, bestEvalForEnemy);
+        }
 
         return new BoardEval(forBlack ? bestEvalForEnemy : bestEval, forBlack ? bestEval : bestEvalForEnemy);
     }
 
-    public static void calculateEvalForPosition(BasePiece[][] position, PositionEval eval, boolean forBlack) {
+    private static BoardEval processMovesSequentially(List<MoveTask> moveTasks, boolean forBlack,
+                                                      PositionEval bestEval, PositionEval bestEvalForEnemy) {
+        for (MoveTask task : moveTasks) {
+            MoveResult result = task.call();
+            PositionEval currentEval = result.eval;
+            PositionEval currentEvalForEnemy = result.enemyEval;
 
+            if (PositionEval.isLeftBiggerThanRight(currentEval, currentEvalForEnemy, bestEval, bestEvalForEnemy)) {
+                bestEval = currentEval;
+                bestEvalForEnemy = currentEvalForEnemy;
+            }
+        }
+
+        return new BoardEval(forBlack ? bestEvalForEnemy : bestEval, forBlack ? bestEval : bestEvalForEnemy);
+    }
+
+    // Class to evaluate a single move
+    private static class MoveTask implements Callable<MoveResult> {
+        private final BasePiece[][] position;
+        private final boolean forBlack;
+        private final int steps;
+
+        public MoveTask(BasePiece[][] position, boolean forBlack, int steps) {
+            this.position = GameBoard.cloneBoard(position);
+            this.forBlack = forBlack;
+            this.steps = steps;
+        }
+
+        @Override
+        public MoveResult call() {
+            PositionEval currentEval = new PositionEval();
+            PositionEval currentEvalForEnemy = new PositionEval();
+
+            if (steps > 0) {
+                // Moves the other color to get the real position
+                BoardEval boardEval = getBestPosition(
+                        GameBoard.cloneBoard(position),
+                        !forBlack,
+                        steps - 1,
+                        new PositionEval(),
+                        new PositionEval()
+                );
+
+                // Sets the current eval to the eval after other color moved
+                currentEval = forBlack ? boardEval.blackEval : boardEval.whiteEval;
+                currentEval.position = position;
+
+                currentEvalForEnemy = forBlack ? boardEval.whiteEval : boardEval.blackEval;
+                currentEvalForEnemy.position = position;
+            } else {
+                // Gets the eval in the position (for black and white)
+                calculateEvalForPosition(position, currentEval, forBlack);
+                calculateEvalForPosition(position, currentEvalForEnemy, !forBlack);
+            }
+
+            return new MoveResult(currentEval, currentEvalForEnemy);
+        }
+    }
+
+    private static class MoveResult {
+        public final PositionEval eval;
+        public final PositionEval enemyEval;
+
+        public MoveResult(PositionEval eval, PositionEval enemyEval) {
+            this.eval = eval;
+            this.enemyEval = enemyEval;
+        }
+    }
+
+    public static void calculateEvalForPosition(BasePiece[][] position, PositionEval eval, boolean forBlack) {
         eval.position = position;
 
         eval.materialValue = 0;
@@ -377,25 +442,21 @@ public class Shtokfish {
 
         ArrayList<BasePiece[][]> moves = new ArrayList<>();
 
-        //region king safety
+        // region king safety
         Point p = GameBoard.finedKingInBoard(position, forBlack);
         BasePiece king;
 
         if (p.x != -10) {
             king = position[p.y][p.x];
-
         } else {
             eval.kingMoves = -100;
             return;
         }
 
         eval.kingMoves = king.getKingSafety(p.x, p.y, position) * 0.004f;
+        // endregion
 
-
-        //endregion
-
-
-        //for checkmate
+        // for checkmate
         int movesCount = 0;
         boolean canEnemyMove = false;
         boolean isEnemyChecked = false;
@@ -406,149 +467,151 @@ public class Shtokfish {
                 if (position[y][x] != null)
                     if (forBlack == position[y][x].isEnemy) {
 
-                        //for enemy check
-                        if(!isEnemyChecked)
-                            if(position[y][x].doesCheck(x,y,ep.x, ep.y)){
+                        // for enemy check
+                        if (!isEnemyChecked)
+                            if (position[y][x].doesCheck(x, y, ep.x, ep.y)) {
                                 isEnemyChecked = true;
                             }
 
-
-                        //clears the moves every time
+                        // clears the moves every time
                         moves.clear();
 
-                        //material
+                        // material
                         eval.materialValue += position[y][x].type.realMaterialValue;
 
-                        //piece activity
+                        // piece activity
                         position[y][x].getAllPossibleMoves(x, y, moves);
                         eval.piecesActivity += moves.size() * position[y][x].type.movementValue * 0.002f;
 
                         movesCount += moves.size();
 
-                        //pawn structure
-                        if(position[y][x].type == PieceType.PAWN)
-                            eval.pawnStructure += getPawnValue(position,x,y,forBlack);
+                        // pawn structure
+                        if (position[y][x].type == PieceType.PAWN)
+                            eval.pawnStructure += getPawnValue(position, x, y, forBlack);
 
-
-                        //center control (after the opening)
-                        if(position[y][x].doesCheck(x,y,3,3))
+                        // center control (after the opening)
+                        if (position[y][x].doesCheck(x, y, 3, 3))
                             eval.pawnStructure += stage.centerControlValue;
-                        if(position[y][x].doesCheck(x,y,3,4))
+                        if (position[y][x].doesCheck(x, y, 3, 4))
                             eval.pawnStructure += stage.centerControlValue;
-                        if(position[y][x].doesCheck(x,y,4,3))
+                        if (position[y][x].doesCheck(x, y, 4, 3))
                             eval.pawnStructure += stage.centerControlValue;
-                        if(position[y][x].doesCheck(x,y,4,4))
+                        if (position[y][x].doesCheck(x, y, 4, 4))
                             eval.pawnStructure += stage.centerControlValue;
 
-
-
-                        //MyDebug.log("shtokfish move count","count: "+moves.size);
-                    }
-                    else if(!canEnemyMove){
-
-                        //clears the moves every time
+                    } else if (!canEnemyMove) {
+                        // clears the moves every time
                         moves.clear();
 
-                        //piece activity
+                        // piece activity
                         position[y][x].getAllPossibleMoves(x, y, moves);
-                        if(moves.size() > 0)
+                        if (moves.size() > 0)
                             canEnemyMove = true;
-
                     }
-
             }
         }
-        //MyDebug.log("shtokfish enemy","count: " + isEnemyChecked);
-        if(!canEnemyMove && isEnemyChecked)
+
+        if (!canEnemyMove && isEnemyChecked)
             eval.isCheckMated = true;
-
-        //eval.piecesActivity = 0;
-        //eval.kingMoves = 0;
-        //eval.pawnStructure = 0;
-
     }
-    private static float getPawnValue(BasePiece[][] board,int pX, int pY,boolean isEnemy){
+
+    private static float getPawnValue(BasePiece[][] board, int pX, int pY, boolean isEnemy) {
         float value = 0;
 
-        float clearPathValue = (isEnemy ?  7 - pY : pY) * 0.01f;
-        float advanceValue = (isEnemy? 7 - pY : pY) * (isEnemy? 7 - pY : pY) * 0.0003f;
+        float clearPathValue = (isEnemy ? 7 - pY : pY) * 0.01f;
+        float advanceValue = (isEnemy ? 7 - pY : pY) * (isEnemy ? 7 - pY : pY) * 0.0003f;
         float protectedMultiplayer = 1.1f;
 
-
-        //edge pawn
-        if(pX == 0 || pX == 7)
+        // edge pawn
+        if (pX == 0 || pX == 7)
             value -= 0.0001f;
 
-
-        //how much the pawn is close to promotion
+        // how much the pawn is close to promotion
         value += advanceValue;
 
+        // if the pawn path is clear (original, left, right)
+        Point p = new Point(-1, -1);
+        Point pl = new Point(-1, -1);
+        Point pr = new Point(-1, -1);
 
-        //if the pawn path is clear (original, left, right)
-        Point p = new Point(-1,-1);
-        Point pl = new Point(-1,-1);
-        Point pr = new Point(-1,-1);
+        p = board[pY][pX].moveInLineUntilHitEnemy(pX, pY, 0, isEnemy ? -1 : 1, board, isEnemy, p);
+        pl = board[pY][pX].moveInLineUntilHitEnemy(pX - 1, pY, 0, isEnemy ? -1 : 1, board, isEnemy, pl);
+        pr = board[pY][pX].moveInLineUntilHitEnemy(pX + 1, pY, 0, isEnemy ? -1 : 1, board, isEnemy, pr);
 
-        p = board[pY][pX].moveInLineUntilHitEnemy(pX,pY,0,isEnemy?-1:1,board,isEnemy,p);
-        pl = board[pY][pX].moveInLineUntilHitEnemy(pX-1,pY,0,isEnemy?-1:1,board,isEnemy,pl);
-        pr = board[pY][pX].moveInLineUntilHitEnemy(pX+1,pY,0,isEnemy?-1:1,board,isEnemy,pr);
-
-
-        if(p != null){
-            if(board[p.y][p.x].type != PieceType.PAWN) {
+        if (p != null) {
+            if (board[p.y][p.x].type != PieceType.PAWN) {
                 value += clearPathValue;
                 protectedMultiplayer = 4f;
 
-                if(pl != null)
-                    if(board[pl.y][pl.x].type != PieceType.PAWN){
+                if (pl != null)
+                    if (board[pl.y][pl.x].type != PieceType.PAWN) {
                         protectedMultiplayer = 7f;
 
-                        if(pr != null)
-                            if(board[pr.y][pr.x].type != PieceType.PAWN)
+                        if (pr != null)
+                            if (board[pr.y][pr.x].type != PieceType.PAWN)
                                 protectedMultiplayer = 8f;
                     }
-
             }
-        }
-        else{
+        } else {
             value += clearPathValue;
             protectedMultiplayer = 8.4f;
         }
 
-
-
-        //if the pawn is protected
-        for (int y = 0; y<8;y++) {
+        // if the pawn is protected
+        for (int y = 0; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
                 if (board[y][x] != null)
                     if (board[y][x].isEnemy == isEnemy) {
-                        if(board[y][x].doesCheck(x,y,pX,pY)){
+                        if (board[y][x].doesCheck(x, y, pX, pY)) {
                             value += advanceValue * protectedMultiplayer;
                             return value;
                         }
-
                     }
             }
         }
 
-
         return value;
     }
 
-    private static boolean isInMiddleGame(BasePiece[][] position){
-        if(position[3][3] != null)
-            if(position[3][3].type == PieceType.PAWN)
+    private static boolean isInMiddleGame(BasePiece[][] position) {
+        if (position[3][3] != null)
+            if (position[3][3].type == PieceType.PAWN)
                 return false;
-        if(position[3][4] != null)
-            if(position[3][4].type == PieceType.PAWN)
+        if (position[3][4] != null)
+            if (position[3][4].type == PieceType.PAWN)
                 return false;
-        if(position[4][3] != null)
-            if(position[4][3].type == PieceType.PAWN)
+        if (position[4][3] != null)
+            if (position[4][3].type == PieceType.PAWN)
                 return false;
-        if(position[4][4] != null)
-            if(position[4][4].type == PieceType.PAWN)
+        if (position[4][4] != null)
+            if (position[4][4].type == PieceType.PAWN)
                 return false;
 
         return true;
     }
+
+    // Method to clean up thread pool when the game ends
+    public static void shutdown() {
+        executorService.shutdown();
+        try {
+            if (!executorService.awaitTermination(800, TimeUnit.MILLISECONDS)) {
+                executorService.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            executorService.shutdownNow();
+        }
+    }
+
+    // Method to reinitialize thread pool if needed (e.g., for a new game)
+    public static void reinitializeThreadPool() {
+        shutdown();
+        executorService = Executors.newFixedThreadPool(maxThreads);
+    }
+
+    // Method to set the number of threads to use
+    public static void setThreadCount(int threads) {
+        maxThreads = threads > 0 ? threads : Runtime.getRuntime().availableProcessors();
+        reinitializeThreadPool();
+    }
 }
+
