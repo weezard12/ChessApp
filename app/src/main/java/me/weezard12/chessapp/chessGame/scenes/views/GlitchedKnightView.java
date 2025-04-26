@@ -69,6 +69,5 @@ public class GlitchedKnightView extends GameScene {
         catch (Exception ex){
 
         }
-
     }
 }
