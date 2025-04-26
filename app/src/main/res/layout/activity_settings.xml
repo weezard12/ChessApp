@@ -37,23 +37,6 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Game Volume Label -->
-            <TextView
-                android:id="@+id/tvGameVolume"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Game Volume"
-                android:textSize="18sp"
-                android:textColor="@android:color/white"
-                android:layout_marginTop="16dp"/>
-
-            <!-- Game Volume Slider -->
-            <SeekBar
-                android:id="@+id/seekBarGame"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:max="100" />
-
             <!-- Music Volume Label -->
             <TextView
                 android:id="@+id/tvMusicVolume"
@@ -67,23 +50,6 @@
             <!-- Music Volume Slider -->
             <SeekBar
                 android:id="@+id/seekBarMusic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:max="100" />
-
-            <!-- Sound Effects Volume Label -->
-            <TextView
-                android:id="@+id/tvEffectsVolume"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sound Effects Volume"
-                android:textSize="18sp"
-                android:textColor="@android:color/white"
-                android:layout_marginTop="16dp"/>
-
-            <!-- Sound Effects Volume Slider -->
-            <SeekBar
-                android:id="@+id/seekBarEffects"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:max="100" />
