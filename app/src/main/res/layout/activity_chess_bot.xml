@@ -18,6 +18,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <!-- Glitched Knight View -->
+    <me.weezard12.chessapp.chessGame.scenes.views.GlitchedKnightView
+        android:id="@+id/glitchedKnight"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginEnd="160dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     <!-- Chess Bot Label -->
     <TextView
         android:id="@+id/chessTitle"
