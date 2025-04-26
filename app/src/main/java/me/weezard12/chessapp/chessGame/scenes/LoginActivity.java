@@ -21,6 +21,8 @@ import androidx.core.view.WindowInsetsCompat;
 import me.weezard12.chessapp.R;
 import me.weezard12.chessapp.database.DatabaseHelp;
 import me.weezard12.chessapp.database.UserSessionManager;
+import me.weezard12.chessapp.database.UserSettings;
+import me.weezard12.chessapp.gameLogic.MusicManager;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -31,6 +33,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private boolean isLoginMode = true;
     private DatabaseHelp databaseHelp;
     private UserSessionManager sessionManager;
+    private MusicManager musicManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +57,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             return insets;
         });
         
-        // Initialize database helper and session manager
+        // Initialize database helper, session manager, and music manager
         databaseHelp = new DatabaseHelp(this);
         sessionManager = UserSessionManager.getInstance(this);
+        musicManager = MusicManager.getInstance(this);
         
         // Check if user is already logged in
         if (sessionManager.isLoggedIn()) {
@@ -127,6 +131,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             sessionManager.createLoginSession(userId, username, false);
             Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show();
             
+            // Load user settings and apply volume
+            UserSettings userSettings = databaseHelp.getUserSettings(userId);
+            musicManager.setMusicVolume(userSettings.getVolume());
+            
             // Go to menu activity
             startActivity(new Intent(LoginActivity.this, MenuActivity.class));
             finish();
@@ -170,6 +178,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             sessionManager.createLoginSession((int)userId, username, false);
             Toast.makeText(this, "Signup successful", Toast.LENGTH_SHORT).show();
             
+            // Load user settings and apply volume (default settings were created during registration)
+            UserSettings userSettings = databaseHelp.getUserSettings((int)userId);
+            musicManager.setMusicVolume(userSettings.getVolume());
+            
             // Go to menu activity
             startActivity(new Intent(LoginActivity.this, MenuActivity.class));
             finish();
@@ -183,6 +195,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         // Create guest session
         sessionManager.createLoginSession(-1, "Guest", true);
         Toast.makeText(this, "Logged in as guest", Toast.LENGTH_SHORT).show();
+        
+        // Use default volume for guest
+        UserSettings defaultSettings = new UserSettings();
+        musicManager.setMusicVolume(defaultSettings.getVolume());
         
         // Go to menu activity
         startActivity(new Intent(LoginActivity.this, MenuActivity.class));
