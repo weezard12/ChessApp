@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import me.weezard12.chessapp.R;
+import me.weezard12.chessapp.database.UserSessionManager;
 import me.weezard12.chessapp.gameLogic.MusicManager;
 
 public class LoadingScreenActivity extends AppCompatActivity {
@@ -59,12 +60,25 @@ public class LoadingScreenActivity extends AppCompatActivity {
         if (animatorSet != null && animatorSet.isRunning()) {
             animatorSet.cancel();
         }
-
-        Intent intent = new Intent(this, MenuActivity.class);
-        startActivity(intent);
-
+        
+        // Start music
         MusicManager musicManager = MusicManager.getInstance(this);
         musicManager.loadMusic(this, R.raw.background_music);
         musicManager.playMusic();
+        
+        // Check if user is already logged in
+        UserSessionManager sessionManager = UserSessionManager.getInstance(this);
+        Intent intent;
+        
+        if (sessionManager.isLoggedIn()) {
+            // User is already logged in, go directly to menu
+            intent = new Intent(this, MenuActivity.class);
+        } else {
+            // User is not logged in, go to login screen
+            intent = new Intent(this, LoginActivity.class);
+        }
+        
+        startActivity(intent);
+        finish(); // Close this activity so user can't go back to it
     }
 }

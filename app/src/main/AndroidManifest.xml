@@ -36,6 +36,10 @@
             android:exported="false"
             android:screenOrientation="landscape" />
         <activity
+            android:name=".chessGame.scenes.LoginActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

@@ -86,6 +86,12 @@ public class ThemeSelectorView extends LinearLayout {
     private void selectTheme(Context context) {
         Toast.makeText(context, "Theme Selected: " + themeName, Toast.LENGTH_SHORT).show();
         GameBoard.boardColors = colors;
-        ((SettingsActivity)context).updateThemes();
+        
+        // Save theme to user settings
+        if (context instanceof SettingsActivity) {
+            SettingsActivity settingsActivity = (SettingsActivity) context;
+            settingsActivity.saveCurrentTheme(colors, themeName);
+            settingsActivity.updateThemes();
+        }
     }
 }

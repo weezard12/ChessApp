@@ -8,6 +8,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,15 +17,23 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import me.weezard12.chessapp.R;
+import me.weezard12.chessapp.database.DatabaseHelp;
+import me.weezard12.chessapp.database.UserSessionManager;
+import me.weezard12.chessapp.database.UserSettings;
 import me.weezard12.chessapp.gameLogic.MusicManager;
 import me.weezard12.chessapp.MyUtils;
 import me.weezard12.chessapp.chessGame.board.BoardColors;
+import me.weezard12.chessapp.chessGame.board.GameBoard;
 import me.weezard12.chessapp.chessGame.scenes.views.ThemeSelectorView;
 
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
 
     LinearLayout themesLayout;
     Button backButton;
+    
+    private DatabaseHelp databaseHelp;
+    private UserSessionManager sessionManager;
+    private UserSettings userSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +51,13 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        
+        // Initialize database helper and session manager
+        databaseHelp = new DatabaseHelp(this);
+        sessionManager = UserSessionManager.getInstance(this);
+        
+        // Load user settings
+        loadUserSettings();
 
         backButton = findViewById(R.id.btnBack);
         backButton.setOnClickListener(this);
@@ -77,13 +93,47 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 "Light Brown"));
     }
 
+    /**
+     * Load user settings from database
+     */
+    private void loadUserSettings() {
+        // Check if user is logged in
+        if (sessionManager.isLoggedIn() && !sessionManager.isGuest()) {
+            // Load user settings from database
+            int userId = sessionManager.getUserId();
+            userSettings = databaseHelp.getUserSettings(userId);
+            
+            // Apply user settings
+            GameBoard.boardColors = userSettings.toBoardColors();
+        } else {
+            // Guest user - use default settings
+            userSettings = new UserSettings();
+        }
+    }
+    
+    /**
+     * Save current theme to user settings
+     */
+    public void saveCurrentTheme(BoardColors colors, String themeName) {
+        // Check if user is logged in
+        if (sessionManager.isLoggedIn() && !sessionManager.isGuest()) {
+            // Update user settings
+            userSettings.setFromBoardColors(colors, themeName);
+            
+            // Save to database
+            boolean success = databaseHelp.saveUserSettings(userSettings);
+            if (success) {
+                Toast.makeText(this, "Settings saved", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    
     @Override
     public void onClick(View v) {
         if(v.equals(backButton)){
             Intent intent = new Intent(this, MenuActivity.class);
             startActivity(intent);
         }
-
     }
 
     @Override
