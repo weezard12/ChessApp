@@ -18,6 +18,7 @@ import me.weezard12.chessapp.R;
 import me.weezard12.chessapp.chessGame.ai.Shtokfish;
 import me.weezard12.chessapp.chessGame.ai.ShtokfishThread;
 import me.weezard12.chessapp.chessGame.board.GameBoard;
+import me.weezard12.chessapp.chessGame.scenes.views.GlitchedKnightView;
 
 public class ChessBotActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -25,6 +26,8 @@ public class ChessBotActivity extends AppCompatActivity implements View.OnClickL
     ImageButton blackPieces;
 
     Button startButton;
+
+    private View glitchedKnightView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,12 @@ public class ChessBotActivity extends AppCompatActivity implements View.OnClickL
         whitePieces.setBackgroundColor(Color.CYAN);
         blackPieces = findViewById(R.id.blackPieces);
         startButton = findViewById(R.id.startButton);
+        
+        // Find the GlitchedKnightView using the correct ID
+        glitchedKnightView = findViewById(R.id.glitchedKnight);
+        if (glitchedKnightView == null) {
+            glitchedKnightView = GlitchedKnightView.instance;
+        }
 
         whitePieces.setOnClickListener(this);
         blackPieces.setOnClickListener(this);
@@ -59,12 +68,22 @@ public class ChessBotActivity extends AppCompatActivity implements View.OnClickL
 
             whitePieces.setBackgroundColor(Color.CYAN);
             blackPieces.setBackgroundColor(Color.TRANSPARENT);
+
+            // Player selected white, so bot plays as black
+            if (glitchedKnightView != null) {
+                glitchedKnightView.setBackgroundColor(Color.BLACK);
+            }
         }
         else if(v.equals(blackPieces)){
             GameBoard.currentActiveBoard.isBlackTurn = true;
 
             whitePieces.setBackgroundColor(Color.TRANSPARENT);
             blackPieces.setBackgroundColor(Color.CYAN);
+
+            // Player selected black, so bot plays as white
+            if (glitchedKnightView != null) {
+                glitchedKnightView.setBackgroundColor(Color.WHITE);
+            }
         }
         else if (v.equals(startButton)){
             GameBoard gameBoard = GameBoard.currentActiveBoard;

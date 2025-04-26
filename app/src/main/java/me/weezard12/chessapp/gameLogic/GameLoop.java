@@ -1,7 +1,10 @@
 package me.weezard12.chessapp.gameLogic;
 
 import android.graphics.Canvas;
+import android.transition.Scene;
 import android.util.Log;
+
+import java.util.ArrayList;
 
 import me.weezard12.chessapp.gameLogic.myECS.GameScene;
 
@@ -12,14 +15,14 @@ public class GameLoop extends Thread {
     private static final float FRAME_INTERVAL_NS = 1000000000.0f / TARGET_FPS;
 
     private long lastFrameTime;
-    private long timer;
     private int frames;
 
     public GameScene scene;
+    public static final ArrayList<GameScene> activeScenes = new ArrayList<>();
 
     public GameLoop() {
         lastFrameTime = System.nanoTime();
-        timer = System.currentTimeMillis();
+        long timer = System.currentTimeMillis();
     }
 
     public GameLoop(GameScene scene) {
@@ -29,8 +32,9 @@ public class GameLoop extends Thread {
 
     @Override
     public void run() {
-        long timer = System.currentTimeMillis();
+        activeScenes.add(scene);
 
+        long timer = System.currentTimeMillis();
         while (isRunning) {
             long currentTime = System.nanoTime();
             scene.deltaTime = (currentTime - lastFrameTime) / 1_000_000_000.0f; // Convert ns to seconds
@@ -53,6 +57,7 @@ public class GameLoop extends Thread {
                 e.printStackTrace();
             }
         }
+        activeScenes.remove(scene);
     }
 
 

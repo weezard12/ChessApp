@@ -2,6 +2,7 @@ package me.weezard12.chessapp.chessGame.scenes.views;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 
 import me.weezard12.chessapp.R;
@@ -14,16 +15,22 @@ import me.weezard12.chessapp.gameLogic.myECS.components.renderable.SpriteAnimati
 import me.weezard12.chessapp.gameLogic.myECS.entities.GameEntity;
 
 public class GlitchedKnightView extends GameScene {
+    private GameEntity knight;
+    public static GlitchedKnightView instance;
+    
     public GlitchedKnightView(Context context) {
         super(context);
-        GameLoop gameLoop = new GameLoop(this);
-        gameLoop.start();
+        init();
     }
 
     public GlitchedKnightView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
+    }
+    private void init(){
         GameLoop gameLoop = new GameLoop(this);
         gameLoop.start();
+        instance = this;
     }
 
     @Override
@@ -32,7 +39,7 @@ public class GlitchedKnightView extends GameScene {
 
         setBackgroundColor(Color.TRANSPARENT);
 
-        GameEntity knight = new GameEntity("Knight Icon");
+        knight = new GameEntity("Knight Icon");
         SpriteAnimationRenderer animationRenderer = new SpriteAnimationRenderer();
         animationRenderer.addAnimation("glitch",new SpriteAnimation(ContentManager.loadSpriteSheetFrames(getContext(),R.drawable.gliched_knight_icon,1,24,24),12, SpriteAnimation.LoopMode.LOOP));
         animationRenderer.setScale(0.4f);
@@ -42,6 +49,13 @@ public class GlitchedKnightView extends GameScene {
 
         knight.setPosition(getSurfaceCenter());
         addEntity(knight);
-
+    }
+    
+    /**
+     * Changes the background of the glitched knight view based on the bot's color
+     * @param isBotBlack true if the bot is playing as black, false if the bot is playing as white
+     */
+    public void setBotColor(boolean isBotBlack) {
+        knight.scene.setBackgroundColor(isBotBlack? Color.BLACK : Color.WHITE);
     }
 }
