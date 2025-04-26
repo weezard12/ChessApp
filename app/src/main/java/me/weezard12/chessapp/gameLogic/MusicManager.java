@@ -1,11 +1,17 @@
 package me.weezard12.chessapp.gameLogic;
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class MusicManager {
     private static MusicManager instance;
@@ -17,7 +23,11 @@ public class MusicManager {
     private float effectsVolume = 1.0f; // Volume for effects
 
     private boolean isMusicPlaying = false;
-    private boolean stopMusicOnMinimize = true; // New flag for stopping music when minimized
+    private boolean stopMusicOnMinimize = true; // Flag for stopping music when minimized
+    private boolean isAppInBackground = false; // Flag to track app state
+    private Handler appStateHandler; // Handler for app state checking thread
+    private Runnable appStateChecker; // Runnable for app state checking
+    private static final int APP_STATE_CHECK_INTERVAL = 500; // Check interval in ms
 
     private MusicManager(Context context) {
         instance = this;
@@ -33,6 +43,11 @@ public class MusicManager {
                 .build();
 
         soundMap = new HashMap<>();
+        
+        // Initialize app state checking
+        appStateHandler = new Handler(Looper.getMainLooper());
+        initAppStateChecker(context);
+        startAppStateChecker();
     }
 
     // Singleton instance
@@ -61,7 +76,8 @@ public class MusicManager {
 
     /** ▶️ Play background music */
     public void playMusic() {
-        if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
+        // Only play music if app is in foreground
+        if (mediaPlayer != null && !mediaPlayer.isPlaying() && !isAppInBackground) {
             mediaPlayer.start();
             isMusicPlaying = true;
         }
@@ -71,7 +87,8 @@ public class MusicManager {
     public void pauseMusic() {
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
-            isMusicPlaying = false;
+            // We keep isMusicPlaying true to remember that music should be playing
+            // This way we know to resume it when the app comes back to foreground
         }
     }
 
@@ -94,8 +111,9 @@ public class MusicManager {
 
     /** 🔄 Resume music if it was playing */
     public void resumeMusic() {
-        if (!isMusicPlaying) {
-            playMusic();
+        if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
+            mediaPlayer.start();
+            isMusicPlaying = true;
         }
     }
 
@@ -114,6 +132,9 @@ public class MusicManager {
 
     /** 🛑 Release resources */
     public void release() {
+        // Stop the app state checker
+        stopAppStateChecker();
+        
         if (mediaPlayer != null) {
             mediaPlayer.release();
             mediaPlayer = null;
@@ -125,21 +146,86 @@ public class MusicManager {
 
     /** 🔄 Handle app minimize behavior */
     public void onAppMinimized() {
-        if (stopMusicOnMinimize) {
+        isAppInBackground = true;
+        if (stopMusicOnMinimize && mediaPlayer != null && mediaPlayer.isPlaying()) {
             pauseMusic();
         }
     }
 
     /** 🔄 Handle app resume behavior */
     public void onAppResumed() {
-        if (stopMusicOnMinimize) {
+        isAppInBackground = false;
+        if (stopMusicOnMinimize && isMusicPlaying) {
             resumeMusic();
         }
+        // Log the state for debugging
+        Log.d("MusicManager", "App resumed. isMusicPlaying: " + isMusicPlaying);
     }
 
     /** ✅ Enable or disable stop music on minimize */
     public void setStopMusicOnMinimize(boolean stopMusic) {
         this.stopMusicOnMinimize = stopMusic;
+    }
+    
+    /**
+     * Initialize the app state checker
+     */
+    private void initAppStateChecker(Context context) {
+        final Context appContext = context.getApplicationContext();
+        appStateChecker = new Runnable() {
+            @Override
+            public void run() {
+                checkAppState(appContext);
+                // Schedule next check
+                appStateHandler.postDelayed(this, APP_STATE_CHECK_INTERVAL);
+            }
+        };
+    }
+    
+    /**
+     * Start the app state checker thread
+     */
+    private void startAppStateChecker() {
+        appStateHandler.post(appStateChecker);
+    }
+    
+    /**
+     * Stop the app state checker thread
+     */
+    private void stopAppStateChecker() {
+        appStateHandler.removeCallbacks(appStateChecker);
+    }
+    
+    /**
+     * Check if the app is in foreground or background
+     */
+    private void checkAppState(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
+        if (appProcesses == null) {
+            return;
+        }
+        
+        String packageName = context.getPackageName();
+        for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+            if (appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND 
+                    && appProcess.processName.equals(packageName)) {
+                // App is in foreground
+                if (isAppInBackground) {
+                    Log.d("MusicManager", "App state changed: Background -> Foreground");
+                    isAppInBackground = false;
+                    onAppResumed();
+                }
+                return;
+            }
+        }
+        
+        // If we get here, app is in background
+        if (!isAppInBackground) {
+            Log.d("MusicManager", "App state changed: Foreground -> Background");
+            isAppInBackground = true;
+            onAppMinimized();
+        }
     }
 
     /** ℹ️ Check if stop music on minimize is enabled */
