@@ -28,6 +28,13 @@ public class MusicManager {
     private Handler appStateHandler; // Handler for app state checking thread
     private Runnable appStateChecker; // Runnable for app state checking
     private static final int APP_STATE_CHECK_INTERVAL = 500; // Check interval in ms
+    
+    // Volume fade constants
+    private static final int VOLUME_FADE_DURATION = 500; // Duration of fade in ms
+    private static final int VOLUME_FADE_STEPS = 250; // Number of steps in fade
+    private float savedMusicVolume = 1.0f; // Store original volume for fading
+    private Handler fadeHandler = new Handler(Looper.getMainLooper());
+    private Runnable fadeRunnable;
 
     private MusicManager(Context context) {
         instance = this;
@@ -91,6 +98,109 @@ public class MusicManager {
             // This way we know to resume it when the app comes back to foreground
         }
     }
+    
+    /**
+     * Fade out music volume and then pause
+     */
+    private void fadeOutMusic() {
+        if (mediaPlayer == null || !mediaPlayer.isPlaying()) {
+            return;
+        }
+        
+        // Cancel any existing fade operations
+        if (fadeRunnable != null) {
+            fadeHandler.removeCallbacks(fadeRunnable);
+        }
+        
+        // Save the current volume to restore later
+        savedMusicVolume = musicVolume;
+        
+        // Calculate step size for smooth fade
+        final float stepSize = savedMusicVolume / VOLUME_FADE_STEPS;
+        final int stepDuration = VOLUME_FADE_DURATION / VOLUME_FADE_STEPS;
+        
+        // Create fade out runnable
+        final float[] currentVolume = {savedMusicVolume};
+        
+        fadeRunnable = new Runnable() {
+            @Override
+            public void run() {
+                // Reduce volume by step size
+                currentVolume[0] -= stepSize;
+                
+                if (currentVolume[0] <= 0) {
+                    // Reached minimum volume, pause the music
+                    currentVolume[0] = 0;
+                    if (mediaPlayer != null) {
+                        mediaPlayer.setVolume(0, 0);
+                        mediaPlayer.pause();
+                    }
+                } else {
+                    // Set the new volume
+                    if (mediaPlayer != null) {
+                        mediaPlayer.setVolume(currentVolume[0], currentVolume[0]);
+                        // Schedule next volume reduction
+                        fadeHandler.postDelayed(this, stepDuration);
+                    }
+                }
+            }
+        };
+        
+        // Start the fade out process
+        fadeHandler.post(fadeRunnable);
+    }
+    
+    /**
+     * Fade in music volume
+     */
+    private void fadeInMusic() {
+        if (mediaPlayer == null) {
+            return;
+        }
+        
+        // Cancel any existing fade operations
+        if (fadeRunnable != null) {
+            fadeHandler.removeCallbacks(fadeRunnable);
+        }
+        
+        // Start with volume at 0
+        if (mediaPlayer != null) {
+            mediaPlayer.setVolume(0, 0);
+        }
+        
+        // Calculate step size for smooth fade
+        final float stepSize = savedMusicVolume / VOLUME_FADE_STEPS;
+        final int stepDuration = VOLUME_FADE_DURATION / VOLUME_FADE_STEPS;
+        
+        // Create fade in runnable
+        final float[] currentVolume = {0};
+        
+        fadeRunnable = new Runnable() {
+            @Override
+            public void run() {
+                // Increase volume by step size
+                currentVolume[0] += stepSize;
+                
+                if (currentVolume[0] >= savedMusicVolume) {
+                    // Reached target volume
+                    currentVolume[0] = savedMusicVolume;
+                    if (mediaPlayer != null) {
+                        mediaPlayer.setVolume(savedMusicVolume, savedMusicVolume);
+                    }
+                } else {
+                    // Set the new volume
+                    if (mediaPlayer != null) {
+                        mediaPlayer.setVolume(currentVolume[0], currentVolume[0]);
+                        // Schedule next volume increase
+                        fadeHandler.postDelayed(this, stepDuration);
+                    }
+                }
+            }
+        };
+        
+        // Start the fade in process
+        fadeHandler.post(fadeRunnable);
+    }
 
     /** ⏹ Stop background music */
     public void stopMusic() {
@@ -120,6 +230,7 @@ public class MusicManager {
     /** 🎚 Set music volume */
     public void setMusicVolume(float volume) {
         this.musicVolume = volume;
+        this.savedMusicVolume = volume; // Save the user-set volume
         if (mediaPlayer != null) {
             mediaPlayer.setVolume(volume, volume);
         }
@@ -135,6 +246,12 @@ public class MusicManager {
         // Stop the app state checker
         stopAppStateChecker();
         
+        // Cancel any fade operations
+        if (fadeRunnable != null) {
+            fadeHandler.removeCallbacks(fadeRunnable);
+            fadeRunnable = null;
+        }
+        
         if (mediaPlayer != null) {
             mediaPlayer.release();
             mediaPlayer = null;
@@ -148,7 +265,8 @@ public class MusicManager {
     public void onAppMinimized() {
         isAppInBackground = true;
         if (stopMusicOnMinimize && mediaPlayer != null && mediaPlayer.isPlaying()) {
-            pauseMusic();
+            // Fade out instead of abrupt pause
+            fadeOutMusic();
         }
     }
 
@@ -156,7 +274,11 @@ public class MusicManager {
     public void onAppResumed() {
         isAppInBackground = false;
         if (stopMusicOnMinimize && isMusicPlaying) {
-            resumeMusic();
+            // If music was paused due to background, fade it back in
+            if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
+                mediaPlayer.start();
+                fadeInMusic();
+            }
         }
         // Log the state for debugging
         Log.d("MusicManager", "App resumed. isMusicPlaying: " + isMusicPlaying);
