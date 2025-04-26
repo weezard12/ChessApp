@@ -5,6 +5,7 @@ import android.util.Log;
 
 import me.weezard12.chessapp.chessGame.board.GameBoard;
 import me.weezard12.chessapp.chessGame.pieces.baseClasses.BasePiece;
+import me.weezard12.chessapp.chessGame.scenes.views.GlitchedKnightView;
 
 public class ShtokfishThread extends Thread{
 
@@ -16,6 +17,12 @@ public class ShtokfishThread extends Thread{
 
     @Override
     public void run() {
+
+        // if playing against the bot there will be a visual indicator
+        if(GlitchedKnightView.instance != null){
+            GlitchedKnightView.instance.setThinking(true);
+        }
+
         isCalculating = true;
         long startTime = System.nanoTime(); // for calc time
 
@@ -33,6 +40,10 @@ public class ShtokfishThread extends Thread{
             gameBoard.isBlackTurn = !gameBoard.isBlackTurn;
         }
         isCalculating = false;
+
+        if(GlitchedKnightView.instance != null){
+            GlitchedKnightView.instance.setThinking(false);
+        }
     }
 
     @Override

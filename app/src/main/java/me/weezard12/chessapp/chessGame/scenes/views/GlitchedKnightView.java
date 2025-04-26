@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
+import android.util.Log;
 
 import me.weezard12.chessapp.R;
 import me.weezard12.chessapp.gameLogic.ContentManager;
@@ -61,7 +62,13 @@ public class GlitchedKnightView extends GameScene {
         addEntity(knight);
     }
     public void setThinking(boolean isThinking){
-        knight.getComponent(SpriteRenderer.class).setEnabled(!isThinking);
-        knight.getComponent(SpriteAnimationRenderer.class).setEnabled(isThinking);
+        try {
+            knight.getComponent(SpriteRenderer.class).setEnabled(!isThinking);
+            knight.getComponent(SpriteAnimationRenderer.class).setEnabled(isThinking);
+        }
+        catch (Exception ex){
+
+        }
+
     }
 }
