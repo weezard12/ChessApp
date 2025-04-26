@@ -14,8 +14,6 @@ public class UserSettings {
     private int blackColor;
     private int selectedTileColor;
     private int movesHighlightColor;
-    private boolean soundEnabled;
-    private boolean musicEnabled;
     private float volume;
 
     public UserSettings() {
@@ -25,22 +23,17 @@ public class UserSettings {
         this.blackColor = Color.BLACK;
         this.selectedTileColor = Color.BLUE;
         this.movesHighlightColor = Color.CYAN;
-        this.soundEnabled = true;
-        this.musicEnabled = true;
         this.volume = 1.0f;
     }
 
     public UserSettings(int userId, String themeName, int whiteColor, int blackColor, 
-                        int selectedTileColor, int movesHighlightColor, 
-                        boolean soundEnabled, boolean musicEnabled, float volume) {
+                        int selectedTileColor, int movesHighlightColor, float volume) {
         this.userId = userId;
         this.themeName = themeName;
         this.whiteColor = whiteColor;
         this.blackColor = blackColor;
         this.selectedTileColor = selectedTileColor;
         this.movesHighlightColor = movesHighlightColor;
-        this.soundEnabled = soundEnabled;
-        this.musicEnabled = musicEnabled;
         this.volume = volume;
     }
 
@@ -112,21 +105,9 @@ public class UserSettings {
         this.movesHighlightColor = movesHighlightColor;
     }
 
-    public boolean isSoundEnabled() {
-        return soundEnabled;
-    }
 
-    public void setSoundEnabled(boolean soundEnabled) {
-        this.soundEnabled = soundEnabled;
-    }
 
-    public boolean isMusicEnabled() {
-        return musicEnabled;
-    }
 
-    public void setMusicEnabled(boolean musicEnabled) {
-        this.musicEnabled = musicEnabled;
-    }
 
     public float getVolume() {
         return volume;

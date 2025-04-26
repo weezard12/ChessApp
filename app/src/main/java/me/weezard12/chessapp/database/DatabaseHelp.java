@@ -27,8 +27,6 @@ public class DatabaseHelp extends SQLiteOpenHelper {
     private static final String COLUMN_BLACK_COLOR = "black_color";
     private static final String COLUMN_SELECTED_TILE_COLOR = "selected_tile_color";
     private static final String COLUMN_MOVES_HIGHLIGHT_COLOR = "moves_highlight_color";
-    private static final String COLUMN_SOUND_ENABLED = "sound_enabled";
-    private static final String COLUMN_MUSIC_ENABLED = "music_enabled";
     private static final String COLUMN_VOLUME = "volume";
 
     // Create users table query
@@ -54,8 +52,6 @@ public class DatabaseHelp extends SQLiteOpenHelper {
                     COLUMN_BLACK_COLOR + " INTEGER, " +
                     COLUMN_SELECTED_TILE_COLOR + " INTEGER, " +
                     COLUMN_MOVES_HIGHLIGHT_COLOR + " INTEGER, " +
-                    COLUMN_SOUND_ENABLED + " INTEGER, " +
-                    COLUMN_MUSIC_ENABLED + " INTEGER, " +
                     COLUMN_VOLUME + " REAL, " +
                     "FOREIGN KEY(" + COLUMN_USER_ID + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_ID + ")" +
                     ");";
@@ -158,8 +154,6 @@ public class DatabaseHelp extends SQLiteOpenHelper {
         values.put(COLUMN_BLACK_COLOR, settings.getBlackColor());
         values.put(COLUMN_SELECTED_TILE_COLOR, settings.getSelectedTileColor());
         values.put(COLUMN_MOVES_HIGHLIGHT_COLOR, settings.getMovesHighlightColor());
-        values.put(COLUMN_SOUND_ENABLED, settings.isSoundEnabled() ? 1 : 0);
-        values.put(COLUMN_MUSIC_ENABLED, settings.isMusicEnabled() ? 1 : 0);
         values.put(COLUMN_VOLUME, settings.getVolume());
 
         // Check if settings already exist for this user
@@ -206,8 +200,6 @@ public class DatabaseHelp extends SQLiteOpenHelper {
             settings.setBlackColor(cursor.getInt(cursor.getColumnIndex(COLUMN_BLACK_COLOR)));
             settings.setSelectedTileColor(cursor.getInt(cursor.getColumnIndex(COLUMN_SELECTED_TILE_COLOR)));
             settings.setMovesHighlightColor(cursor.getInt(cursor.getColumnIndex(COLUMN_MOVES_HIGHLIGHT_COLOR)));
-            settings.setSoundEnabled(cursor.getInt(cursor.getColumnIndex(COLUMN_SOUND_ENABLED)) == 1);
-            settings.setMusicEnabled(cursor.getInt(cursor.getColumnIndex(COLUMN_MUSIC_ENABLED)) == 1);
             settings.setVolume(cursor.getFloat(cursor.getColumnIndex(COLUMN_VOLUME)));
         }
 
