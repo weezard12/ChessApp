@@ -7,6 +7,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +29,7 @@ public class ChessBotActivity extends AppCompatActivity implements View.OnClickL
     Button startButton;
 
     private View glitchedKnightView;
+    private TextView chessTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,7 @@ public class ChessBotActivity extends AppCompatActivity implements View.OnClickL
         whitePieces.setBackgroundColor(Color.CYAN);
         blackPieces = findViewById(R.id.blackPieces);
         startButton = findViewById(R.id.startButton);
+        chessTitle = findViewById(R.id.chessTitle);
         
         // Find the GlitchedKnightView using the correct ID
         glitchedKnightView = findViewById(R.id.glitchedKnight);
@@ -96,6 +99,25 @@ public class ChessBotActivity extends AppCompatActivity implements View.OnClickL
                     Shtokfish.thread = new ShtokfishThread(gameBoard);
                     Shtokfish.thread.start();
                 }
+                
+            // Move the GlitchedKnightView to the bottom of the "Player VS Bot" label
+            if (glitchedKnightView != null && chessTitle != null) {
+                // Get the current layout parameters
+                android.view.ViewGroup.MarginLayoutParams params = 
+                        (android.view.ViewGroup.MarginLayoutParams) glitchedKnightView.getLayoutParams();
+                
+                // Get the position of the chessTitle
+                int[] titlePos = new int[2];
+                chessTitle.getLocationInWindow(titlePos);
+                
+                // Calculate the new position
+                params.topMargin = titlePos[1] + chessTitle.getHeight() + 10; // 10dp margin below the title
+                params.leftMargin = titlePos[0];
+                params.rightMargin = 10;
+                
+                // Apply the new layout parameters
+                glitchedKnightView.setLayoutParams(params);
+            }
 
             whitePieces.setVisibility(View.INVISIBLE);
             blackPieces.setVisibility(View.INVISIBLE);
