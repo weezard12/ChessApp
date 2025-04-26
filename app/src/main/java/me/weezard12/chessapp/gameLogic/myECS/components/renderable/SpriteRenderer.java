@@ -8,32 +8,41 @@ import android.graphics.RectF;
 
 public class SpriteRenderer extends RenderableComponent {
 
+    private final Sprite sprite;
+    private final Paint paint;
+    private final RectF destinationRect = new RectF();
+    private float localScale = 1.0f; // New property for local scale
+
     public Sprite getSprite() {
         return sprite;
     }
 
-    private final Sprite sprite;
-    private final Paint paint;
-    private final RectF destinationRect = new RectF();
-
     public SpriteRenderer(Sprite sprite) {
         this.sprite = sprite;
         this.paint = new Paint();
-        paint.setColor(Color.WHITE);
-
-        paint.setAntiAlias(false); // Ensure no anti-aliasing for sharp pixels
-        paint.setFilterBitmap(false); // Disable bilinear filtering for sharper images
-        paint.setDither(false); // Disable dithering for sharp pixel edges
-
+        setupPaint();
     }
+
     public SpriteRenderer(Bitmap texture) {
         this.sprite = new Sprite(texture);
         this.paint = new Paint();
-        paint.setColor(Color.WHITE);
+        setupPaint();
+    }
 
+    private void setupPaint() {
+        paint.setColor(Color.WHITE);
         paint.setAntiAlias(false); // Ensure no anti-aliasing for sharp pixels
         paint.setFilterBitmap(false); // Disable bilinear filtering for sharper images
         paint.setDither(false); // Disable dithering for sharp pixel edges
+    }
+
+    // New setter for local scale
+    public void setScale(float scale) {
+        this.localScale = scale;
+    }
+
+    public float getScale() {
+        return localScale;
     }
 
     @Override
@@ -45,18 +54,17 @@ public class SpriteRenderer extends RenderableComponent {
 
         Bitmap texture = sprite.texture;
 
-        // Handle scaling: if sprite has scale set, apply it, otherwise default to 1.0
-        float scaleX = sprite.getScale().x + entity.getTransform().scale -1;
-        float scaleY = sprite.getScale().y + entity.getTransform().scale -1;
+        // Combine entity's transform scale, sprite's internal scale, and local scale
+        float scaleX = (sprite.getScale().x + entity.getTransform().scale - 1) * localScale;
+        float scaleY = (sprite.getScale().y + entity.getTransform().scale - 1) * localScale;
 
-        // Calculate the source and destination rectangles
-        RectF destinationRect = new RectF(
+        destinationRect.set(
                 entityX - (texture.getWidth() * scaleX / 2),
                 entityY - (texture.getHeight() * scaleY / 2),
                 entityX + (texture.getWidth() * scaleX / 2),
                 entityY + (texture.getHeight() * scaleY / 2)
         );
-        // Draw the bitmap on the canvas, applying the scaling and positioning
+
         canvas.drawBitmap(texture, null, destinationRect, paint);
     }
 }
