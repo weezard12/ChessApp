@@ -21,28 +21,10 @@ public class UserSettings {
         this.volume = 1.0f;
     }
 
-    public UserSettings(int userId, String themeName, int themeIndex, float volume) {
-        this.userId = userId;
-        this.themeName = themeName;
-        this.themeIndex = themeIndex;
-        this.volume = volume;
-    }
-
-    // Convert to BoardColors object based on theme index
-    public BoardColors toBoardColors() {
-        return getThemeByIndex();
-    }
-
     // Set theme name and index only
-    public void setFromBoardColors(BoardColors colors, String themeName, int themeIndex) {
+    public void setFromBoardColors(String themeName, int themeIndex) {
         this.themeName = themeName;
         this.themeIndex = themeIndex;
-        // No longer storing individual colors
-    }
-    
-    // Get theme by index
-    public BoardColors getThemeByIndex() {
-        return SettingsActivity.getThemeByIndex(themeIndex);
     }
 
     // Getters and Setters
@@ -69,11 +51,6 @@ public class UserSettings {
     public void setThemeIndex(int themeIndex) {
         this.themeIndex = themeIndex;
     }
-
-    // Color getters and setters removed as we're now using theme index only
-
-
-
 
 
     public float getVolume() {

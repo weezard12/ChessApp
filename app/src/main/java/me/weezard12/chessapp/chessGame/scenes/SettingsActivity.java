@@ -138,28 +138,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         }
         return THEMES[0]; // Default theme if index is out of bounds
     }
+
     
-    /**
-     * Get theme name by index
-     */
-    public static String getThemeNameByIndex(int index) {
-        if (index >= 0 && index < THEME_NAMES.length) {
-            return THEME_NAMES[index];
-        }
-        return THEME_NAMES[0]; // Default theme name if index is out of bounds
-    }
-    
-    /**
-     * Find theme index by comparing with a BoardColors object
-     */
-    public static int findThemeIndex(BoardColors colors) {
-        for (int i = 0; i < THEMES.length; i++) {
-            if (THEMES[i].equals(colors)) {
-                return i;
-            }
-        }
-        return 0; // Default theme if no match found
-    }
+
     
     public void updateThemes(){
         themesLayout.removeAllViews();
@@ -199,7 +180,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         // Check if user is logged in
         if (sessionManager.isLoggedIn() && !sessionManager.isGuest()) {
             // Update user settings with theme index
-            userSettings.setFromBoardColors(colors, themeName, themeIndex);
+            userSettings.setFromBoardColors(themeName, themeIndex);
             
             // Save to database
             boolean success = databaseHelp.saveUserSettings(userSettings);
