@@ -3,6 +3,7 @@ package me.weezard12.chessapp.database;
 import android.graphics.Color;
 
 import me.weezard12.chessapp.chessGame.board.BoardColors;
+import me.weezard12.chessapp.chessGame.scenes.SettingsActivity;
 
 /**
  * Class to store user settings that can be saved to the database
@@ -10,6 +11,7 @@ import me.weezard12.chessapp.chessGame.board.BoardColors;
 public class UserSettings {
     private int userId;
     private String themeName;
+    private int themeIndex; // Added theme index to store instead of full colors
     private int whiteColor;
     private int blackColor;
     private int selectedTileColor;
@@ -19,6 +21,7 @@ public class UserSettings {
     public UserSettings() {
         // Default settings
         this.themeName = "Default";
+        this.themeIndex = 0; // Default theme index
         this.whiteColor = Color.WHITE;
         this.blackColor = Color.BLACK;
         this.selectedTileColor = Color.BLUE;
@@ -26,10 +29,11 @@ public class UserSettings {
         this.volume = 1.0f;
     }
 
-    public UserSettings(int userId, String themeName, int whiteColor, int blackColor, 
+    public UserSettings(int userId, String themeName, int themeIndex, int whiteColor, int blackColor, 
                         int selectedTileColor, int movesHighlightColor, float volume) {
         this.userId = userId;
         this.themeName = themeName;
+        this.themeIndex = themeIndex;
         this.whiteColor = whiteColor;
         this.blackColor = blackColor;
         this.selectedTileColor = selectedTileColor;
@@ -47,13 +51,20 @@ public class UserSettings {
         );
     }
 
-    // Set from BoardColors object
-    public void setFromBoardColors(BoardColors colors, String themeName) {
+    // Set from BoardColors object and theme index
+    public void setFromBoardColors(BoardColors colors, String themeName, int themeIndex) {
         this.themeName = themeName;
+        this.themeIndex = themeIndex;
+        // We still store the colors for backward compatibility
         this.whiteColor = colors.white.toArgb();
         this.blackColor = colors.black.toArgb();
         this.selectedTileColor = colors.selectedTile.toArgb();
         this.movesHighlightColor = colors.movesHighlightColor.toArgb();
+    }
+    
+    // Get theme by index
+    public BoardColors getThemeByIndex() {
+        return SettingsActivity.getThemeByIndex(themeIndex);
     }
 
     // Getters and Setters
@@ -71,6 +82,14 @@ public class UserSettings {
 
     public void setThemeName(String themeName) {
         this.themeName = themeName;
+    }
+    
+    public int getThemeIndex() {
+        return themeIndex;
+    }
+    
+    public void setThemeIndex(int themeIndex) {
+        this.themeIndex = themeIndex;
     }
 
     public int getWhiteColor() {

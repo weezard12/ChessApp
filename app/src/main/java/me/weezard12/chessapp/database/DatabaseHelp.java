@@ -10,7 +10,7 @@ import android.util.Log;
 public class DatabaseHelp extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "chessApp.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String TABLE_USERS = "users";
     private static final String TABLE_SETTINGS = "user_settings";
 
@@ -23,6 +23,7 @@ public class DatabaseHelp extends SQLiteOpenHelper {
     // Settings table columns
     private static final String COLUMN_USER_ID = "user_id";
     private static final String COLUMN_THEME_NAME = "theme_name";
+    private static final String COLUMN_THEME_INDEX = "theme_index";
     private static final String COLUMN_WHITE_COLOR = "white_color";
     private static final String COLUMN_BLACK_COLOR = "black_color";
     private static final String COLUMN_SELECTED_TILE_COLOR = "selected_tile_color";
@@ -48,6 +49,7 @@ public class DatabaseHelp extends SQLiteOpenHelper {
                     COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COLUMN_USER_ID + " INTEGER, " +
                     COLUMN_THEME_NAME + " TEXT, " +
+                    COLUMN_THEME_INDEX + " INTEGER, " +
                     COLUMN_WHITE_COLOR + " INTEGER, " +
                     COLUMN_BLACK_COLOR + " INTEGER, " +
                     COLUMN_SELECTED_TILE_COLOR + " INTEGER, " +
@@ -68,6 +70,10 @@ public class DatabaseHelp extends SQLiteOpenHelper {
         if (oldVersion < 2) {
             // Add settings table in version 2
             db.execSQL(CREATE_TABLE_SETTINGS);
+        }
+        if (oldVersion < 3) {
+            // Add theme_index column in version 3
+            db.execSQL("ALTER TABLE " + TABLE_SETTINGS + " ADD COLUMN " + COLUMN_THEME_INDEX + " INTEGER DEFAULT 0");
         }
     }
 
@@ -150,6 +156,7 @@ public class DatabaseHelp extends SQLiteOpenHelper {
 
         values.put(COLUMN_USER_ID, settings.getUserId());
         values.put(COLUMN_THEME_NAME, settings.getThemeName());
+        values.put(COLUMN_THEME_INDEX, settings.getThemeIndex());
         values.put(COLUMN_WHITE_COLOR, settings.getWhiteColor());
         values.put(COLUMN_BLACK_COLOR, settings.getBlackColor());
         values.put(COLUMN_SELECTED_TILE_COLOR, settings.getSelectedTileColor());
@@ -196,6 +203,16 @@ public class DatabaseHelp extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             settings.setThemeName(cursor.getString(cursor.getColumnIndex(COLUMN_THEME_NAME)));
+            
+            // Check if the theme_index column exists (for backward compatibility)
+            int themeIndexColumnIndex = cursor.getColumnIndex(COLUMN_THEME_INDEX);
+            if (themeIndexColumnIndex != -1) {
+                settings.setThemeIndex(cursor.getInt(themeIndexColumnIndex));
+            } else {
+                // If column doesn't exist, set default index (0)
+                settings.setThemeIndex(0);
+            }
+            
             settings.setWhiteColor(cursor.getInt(cursor.getColumnIndex(COLUMN_WHITE_COLOR)));
             settings.setBlackColor(cursor.getInt(cursor.getColumnIndex(COLUMN_BLACK_COLOR)));
             settings.setSelectedTileColor(cursor.getInt(cursor.getColumnIndex(COLUMN_SELECTED_TILE_COLOR)));

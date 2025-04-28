@@ -28,6 +28,9 @@ import me.weezard12.chessapp.chessGame.board.GameBoard;
 import me.weezard12.chessapp.chessGame.scenes.views.ThemeSelectorView;
 
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
+    
+    // List of predefined themes
+    private static final BoardColors[] THEMES = new BoardColors[7];
 
     LinearLayout themesLayout;
     Button backButton;
@@ -73,32 +76,98 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         musicVolumeSeekBar = findViewById(R.id.seekBarMusic);
         setupMusicVolumeSlider();
     }
+    // Initialize themes array with predefined themes
+    static {
+        // Theme 0: Default
+        THEMES[0] = new BoardColors(Color.WHITE, Color.BLACK, Color.BLUE, Color.CYAN);
+        
+        // Theme 1: Chess.com
+        THEMES[1] = new BoardColors(
+                MyUtils.rgbToFloatRgb(235,236,208), 
+                MyUtils.rgbToFloatRgb(115,149,82), 
+                Color.valueOf(Color.BLUE), 
+                Color.valueOf(Color.CYAN));
+        
+        // Theme 2: Brown
+        THEMES[2] = new BoardColors(
+                MyUtils.rgbToFloatRgb(237,214,176), 
+                MyUtils.rgbToFloatRgb(184,135,98), 
+                Color.valueOf(Color.BLUE), 
+                Color.valueOf(Color.CYAN));
+        
+        // Theme 3: Sky
+        THEMES[3] = new BoardColors(
+                MyUtils.rgbToFloatRgb(240,241,240), 
+                MyUtils.rgbToFloatRgb(196,216,228), 
+                Color.valueOf(Color.BLUE), 
+                Color.valueOf(Color.CYAN));
+        
+        // Theme 4: Clear
+        THEMES[4] = new BoardColors(
+                MyUtils.rgbToFloatRgb(139,138,136), 
+                MyUtils.rgbToFloatRgb(105,104,102), 
+                Color.valueOf(Color.BLUE), 
+                Color.valueOf(Color.CYAN));
+        
+        // Theme 5: Light
+        THEMES[5] = new BoardColors(
+                MyUtils.rgbToFloatRgb(216,217,216), 
+                MyUtils.rgbToFloatRgb(168,169,168), 
+                Color.valueOf(Color.BLUE), 
+                Color.valueOf(Color.CYAN));
+        
+        // Theme 6: Light Brown
+        THEMES[6] = new BoardColors(
+                MyUtils.rgbToFloatRgb(237,203,165), 
+                MyUtils.rgbToFloatRgb(216,164,109), 
+                Color.valueOf(Color.BLUE), 
+                Color.valueOf(Color.CYAN));
+    }
+    
+    // Get theme names array
+    private static final String[] THEME_NAMES = {
+        "Default", "Chess.com", "Brown", "Sky", "Clear", "Light", "Light Brown"
+    };
+    
+    /**
+     * Get a theme by its index
+     */
+    public static BoardColors getThemeByIndex(int index) {
+        if (index >= 0 && index < THEMES.length) {
+            return THEMES[index];
+        }
+        return THEMES[0]; // Default theme if index is out of bounds
+    }
+    
+    /**
+     * Get theme name by index
+     */
+    public static String getThemeNameByIndex(int index) {
+        if (index >= 0 && index < THEME_NAMES.length) {
+            return THEME_NAMES[index];
+        }
+        return THEME_NAMES[0]; // Default theme name if index is out of bounds
+    }
+    
+    /**
+     * Find theme index by comparing with a BoardColors object
+     */
+    public static int findThemeIndex(BoardColors colors) {
+        for (int i = 0; i < THEMES.length; i++) {
+            if (THEMES[i].equals(colors)) {
+                return i;
+            }
+        }
+        return 0; // Default theme if no match found
+    }
+    
     public void updateThemes(){
         themesLayout.removeAllViews();
-        themesLayout.addView(new ThemeSelectorView(this, new BoardColors(Color.WHITE,Color.BLACK,Color.BLUE,Color.CYAN),"Default"));
-        themesLayout.addView(new ThemeSelectorView(this,
-                new BoardColors(MyUtils.rgbToFloatRgb(235,236,208), MyUtils.rgbToFloatRgb(115,149,82), Color.valueOf(Color.BLUE), Color.valueOf(Color.CYAN)),
-                "Chess.com"));
-
-        themesLayout.addView(new ThemeSelectorView(this,
-                new BoardColors(MyUtils.rgbToFloatRgb(237,214,176), MyUtils.rgbToFloatRgb(184,135,98), Color.valueOf(Color.BLUE), Color.valueOf(Color.CYAN)),
-                "Brown"));
-
-        themesLayout.addView(new ThemeSelectorView(this,
-                new BoardColors(MyUtils.rgbToFloatRgb(240,241,240), MyUtils.rgbToFloatRgb(196,216,228), Color.valueOf(Color.BLUE), Color.valueOf(Color.CYAN)),
-                "Sky"));
-
-        themesLayout.addView(new ThemeSelectorView(this,
-                new BoardColors(MyUtils.rgbToFloatRgb(139,138,136), MyUtils.rgbToFloatRgb(105,104,102), Color.valueOf(Color.BLUE), Color.valueOf(Color.CYAN)),
-                "Clear"));
-
-        themesLayout.addView(new ThemeSelectorView(this,
-                new BoardColors(MyUtils.rgbToFloatRgb(216,217,216), MyUtils.rgbToFloatRgb(168,169,168), Color.valueOf(Color.BLUE), Color.valueOf(Color.CYAN)),
-                "Light"));
-
-        themesLayout.addView(new ThemeSelectorView(this,
-                new BoardColors(MyUtils.rgbToFloatRgb(237,203,165), MyUtils.rgbToFloatRgb(216,164,109), Color.valueOf(Color.BLUE), Color.valueOf(Color.CYAN)),
-                "Light Brown"));
+        
+        // Add all themes from the THEMES array
+        for (int i = 0; i < THEMES.length; i++) {
+            themesLayout.addView(new ThemeSelectorView(this, THEMES[i], THEME_NAMES[i], i));
+        }
     }
 
     /**
@@ -111,8 +180,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             int userId = sessionManager.getUserId();
             userSettings = databaseHelp.getUserSettings(userId);
             
-            // Apply user settings
-            GameBoard.boardColors = userSettings.toBoardColors();
+            // Apply user settings - use theme by index
+            GameBoard.boardColors = getThemeByIndex(userSettings.getThemeIndex());
             
             // Apply music volume
             float musicVolume = userSettings.getVolume();
@@ -126,11 +195,11 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     /**
      * Save current theme to user settings
      */
-    public void saveCurrentTheme(BoardColors colors, String themeName) {
+    public void saveCurrentTheme(BoardColors colors, String themeName, int themeIndex) {
         // Check if user is logged in
         if (sessionManager.isLoggedIn() && !sessionManager.isGuest()) {
-            // Update user settings
-            userSettings.setFromBoardColors(colors, themeName);
+            // Update user settings with theme index
+            userSettings.setFromBoardColors(colors, themeName, themeIndex);
             
             // Save to database
             boolean success = databaseHelp.saveUserSettings(userSettings);
