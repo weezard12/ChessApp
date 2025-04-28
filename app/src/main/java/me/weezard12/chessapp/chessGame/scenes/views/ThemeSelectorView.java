@@ -16,11 +16,13 @@ public class ThemeSelectorView extends LinearLayout {
 
     BoardColors colors;
     String themeName;
+    int themeIndex;
 
-    public ThemeSelectorView(Context context, BoardColors colors, String themeName) {
+    public ThemeSelectorView(Context context, BoardColors colors, String themeName, int themeIndex) {
         super(context);
         this.colors = colors;
         this.themeName = themeName;
+        this.themeIndex = themeIndex;
         init(context);
     }
 
@@ -87,10 +89,10 @@ public class ThemeSelectorView extends LinearLayout {
         Toast.makeText(context, "Theme Selected: " + themeName, Toast.LENGTH_SHORT).show();
         GameBoard.boardColors = colors;
         
-        // Save theme to user settings
+        // Save theme to user settings with index
         if (context instanceof SettingsActivity) {
             SettingsActivity settingsActivity = (SettingsActivity) context;
-            settingsActivity.saveCurrentTheme(colors, themeName);
+            settingsActivity.saveCurrentTheme(colors, themeName, themeIndex);
             settingsActivity.updateThemes();
         }
     }
