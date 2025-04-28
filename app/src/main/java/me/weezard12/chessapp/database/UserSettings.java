@@ -11,55 +11,33 @@ import me.weezard12.chessapp.chessGame.scenes.SettingsActivity;
 public class UserSettings {
     private int userId;
     private String themeName;
-    private int themeIndex; // Added theme index to store instead of full colors
-    private int whiteColor;
-    private int blackColor;
-    private int selectedTileColor;
-    private int movesHighlightColor;
+    private int themeIndex; // Store only the theme index, not the full colors
     private float volume;
 
     public UserSettings() {
         // Default settings
         this.themeName = "Default";
         this.themeIndex = 0; // Default theme index
-        this.whiteColor = Color.WHITE;
-        this.blackColor = Color.BLACK;
-        this.selectedTileColor = Color.BLUE;
-        this.movesHighlightColor = Color.CYAN;
         this.volume = 1.0f;
     }
 
-    public UserSettings(int userId, String themeName, int themeIndex, int whiteColor, int blackColor, 
-                        int selectedTileColor, int movesHighlightColor, float volume) {
+    public UserSettings(int userId, String themeName, int themeIndex, float volume) {
         this.userId = userId;
         this.themeName = themeName;
         this.themeIndex = themeIndex;
-        this.whiteColor = whiteColor;
-        this.blackColor = blackColor;
-        this.selectedTileColor = selectedTileColor;
-        this.movesHighlightColor = movesHighlightColor;
         this.volume = volume;
     }
 
-    // Convert to BoardColors object
+    // Convert to BoardColors object based on theme index
     public BoardColors toBoardColors() {
-        return new BoardColors(
-                whiteColor,
-                blackColor,
-                selectedTileColor,
-                movesHighlightColor
-        );
+        return getThemeByIndex();
     }
 
-    // Set from BoardColors object and theme index
+    // Set theme name and index only
     public void setFromBoardColors(BoardColors colors, String themeName, int themeIndex) {
         this.themeName = themeName;
         this.themeIndex = themeIndex;
-        // We still store the colors for backward compatibility
-        this.whiteColor = colors.white.toArgb();
-        this.blackColor = colors.black.toArgb();
-        this.selectedTileColor = colors.selectedTile.toArgb();
-        this.movesHighlightColor = colors.movesHighlightColor.toArgb();
+        // No longer storing individual colors
     }
     
     // Get theme by index
@@ -92,37 +70,7 @@ public class UserSettings {
         this.themeIndex = themeIndex;
     }
 
-    public int getWhiteColor() {
-        return whiteColor;
-    }
-
-    public void setWhiteColor(int whiteColor) {
-        this.whiteColor = whiteColor;
-    }
-
-    public int getBlackColor() {
-        return blackColor;
-    }
-
-    public void setBlackColor(int blackColor) {
-        this.blackColor = blackColor;
-    }
-
-    public int getSelectedTileColor() {
-        return selectedTileColor;
-    }
-
-    public void setSelectedTileColor(int selectedTileColor) {
-        this.selectedTileColor = selectedTileColor;
-    }
-
-    public int getMovesHighlightColor() {
-        return movesHighlightColor;
-    }
-
-    public void setMovesHighlightColor(int movesHighlightColor) {
-        this.movesHighlightColor = movesHighlightColor;
-    }
+    // Color getters and setters removed as we're now using theme index only
 
 
 

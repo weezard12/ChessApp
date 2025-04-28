@@ -157,10 +157,6 @@ public class DatabaseHelp extends SQLiteOpenHelper {
         values.put(COLUMN_USER_ID, settings.getUserId());
         values.put(COLUMN_THEME_NAME, settings.getThemeName());
         values.put(COLUMN_THEME_INDEX, settings.getThemeIndex());
-        values.put(COLUMN_WHITE_COLOR, settings.getWhiteColor());
-        values.put(COLUMN_BLACK_COLOR, settings.getBlackColor());
-        values.put(COLUMN_SELECTED_TILE_COLOR, settings.getSelectedTileColor());
-        values.put(COLUMN_MOVES_HIGHLIGHT_COLOR, settings.getMovesHighlightColor());
         values.put(COLUMN_VOLUME, settings.getVolume());
 
         // Check if settings already exist for this user
@@ -213,10 +209,6 @@ public class DatabaseHelp extends SQLiteOpenHelper {
                 settings.setThemeIndex(0);
             }
             
-            settings.setWhiteColor(cursor.getInt(cursor.getColumnIndex(COLUMN_WHITE_COLOR)));
-            settings.setBlackColor(cursor.getInt(cursor.getColumnIndex(COLUMN_BLACK_COLOR)));
-            settings.setSelectedTileColor(cursor.getInt(cursor.getColumnIndex(COLUMN_SELECTED_TILE_COLOR)));
-            settings.setMovesHighlightColor(cursor.getInt(cursor.getColumnIndex(COLUMN_MOVES_HIGHLIGHT_COLOR)));
             settings.setVolume(cursor.getFloat(cursor.getColumnIndex(COLUMN_VOLUME)));
         }
 
