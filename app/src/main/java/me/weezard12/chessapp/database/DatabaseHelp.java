@@ -10,7 +10,7 @@ import android.util.Log;
 public class DatabaseHelp extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "chessApp.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 1;
     private static final String TABLE_USERS = "users";
     private static final String TABLE_SETTINGS = "user_settings";
 
@@ -24,10 +24,6 @@ public class DatabaseHelp extends SQLiteOpenHelper {
     private static final String COLUMN_USER_ID = "user_id";
     private static final String COLUMN_THEME_NAME = "theme_name";
     private static final String COLUMN_THEME_INDEX = "theme_index";
-    private static final String COLUMN_WHITE_COLOR = "white_color";
-    private static final String COLUMN_BLACK_COLOR = "black_color";
-    private static final String COLUMN_SELECTED_TILE_COLOR = "selected_tile_color";
-    private static final String COLUMN_MOVES_HIGHLIGHT_COLOR = "moves_highlight_color";
     private static final String COLUMN_VOLUME = "volume";
 
     // Create users table query
@@ -50,10 +46,6 @@ public class DatabaseHelp extends SQLiteOpenHelper {
                     COLUMN_USER_ID + " INTEGER, " +
                     COLUMN_THEME_NAME + " TEXT, " +
                     COLUMN_THEME_INDEX + " INTEGER, " +
-                    COLUMN_WHITE_COLOR + " INTEGER, " +
-                    COLUMN_BLACK_COLOR + " INTEGER, " +
-                    COLUMN_SELECTED_TILE_COLOR + " INTEGER, " +
-                    COLUMN_MOVES_HIGHLIGHT_COLOR + " INTEGER, " +
                     COLUMN_VOLUME + " REAL, " +
                     "FOREIGN KEY(" + COLUMN_USER_ID + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_ID + ")" +
                     ");";
